@@ -3,14 +3,42 @@ import { useAuth } from "../../contexts/AuthContext";
 
 export function LoginPage() {
   const { login } = useAuth();
-  const [email, setEmail] = React.useState("admin@ticketkite.com");
-  const [password, setPassword] = React.useState("admin123");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const [authError, setAuthError] = React.useState<string | null>(null);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setAuthError(null);
-    const result = await login(email, password);
+
+    // Client-side validation
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedEmail) {
+      setAuthError("Email is required.");
+      return;
+    }
+
+    if (!trimmedPassword) {
+      setAuthError("Password is required.");
+      return;
+    }
+
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      setAuthError("Please enter a valid email address.");
+      return;
+    }
+
+    // Password minimum length check
+    if (trimmedPassword.length < 3) {
+      setAuthError("Password must be at least 3 characters.");
+      return;
+    }
+
+    const result = await login(trimmedEmail, trimmedPassword);
     if (!result.success) {
       setAuthError(result.error || "Login failed");
     }
@@ -42,9 +70,13 @@ export function LoginPage() {
               type="email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setAuthError(null);
+              }}
               className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              placeholder="admin@ticketkite.com"
+              placeholder="Enter your email"
+              autoComplete="email"
             />
           </div>
           <div className="space-y-1.5">
@@ -55,9 +87,14 @@ export function LoginPage() {
               type="password"
               required
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setAuthError(null);
+              }}
               className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              placeholder="••••••••"
+              placeholder="Enter your password"
+              autoComplete="current-password"
+              minLength={3}
             />
           </div>
 
