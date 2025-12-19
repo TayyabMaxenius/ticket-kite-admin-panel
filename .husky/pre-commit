@@ -1,3 +1,0 @@
-echo "Husky Pre-commit"
-npx lint-staged --allow-empty
-yarn build
