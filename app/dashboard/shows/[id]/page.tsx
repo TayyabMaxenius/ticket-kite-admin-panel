@@ -1,19 +1,28 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useRouter, useParams } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { ArrowLeft, Save, Loader2 } from "lucide-react"
-import Link from "next/link"
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { useRouter, useParams } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ArrowLeft, Save, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { supabase } from "@/lib/supabase/client";
 
 export default function EditShowPage() {
-  const router = useRouter()
-  const params = useParams()
-  const id = params?.id as string
-  const [loading, setLoading] = useState(false)
+  const router = useRouter();
+  const params = useParams();
+  const id = params?.id as string;
+  const isNew = id === "new";
+  const [loading, setLoading] = useState(false);
   const [show, setShow] = useState({
     name: "",
     description: "",
@@ -24,50 +33,97 @@ export default function EditShowPage() {
     category: "",
     status: "active",
     image: "",
-  })
+  });
+
+  const loadShow = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("shows")
+      .select(
+        "name, description, price, discounted_price, duration_minutes, category, status, image_url"
+      )
+      .eq("id", id)
+      .maybeSingle();
+
+    if (error) {
+      console.error(error);
+      alert("Failed to load show from database");
+      setLoading(false);
+      return;
+    }
+
+    if (!data) {
+      setLoading(false);
+      return;
+    }
+
+    setShow({
+      name: data.name ?? "",
+      description: data.description ?? "",
+      venue: "", // not stored yet
+      price: data.price ? String(data.price) : "",
+      discountedPrice: data.discounted_price
+        ? String(data.discounted_price)
+        : "",
+      duration: data.duration_minutes ?? "",
+      category: data.category ?? "",
+      status: data.status ?? "active",
+      image: data.image_url ?? "",
+    });
+    setLoading(false);
+  };
 
   useEffect(() => {
     // Load show data if editing
-    if (id && id !== "new") {
-      loadShow()
+    if (!isNew) {
+      void loadShow();
     }
-  }, [id])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, isNew]);
 
-  const loadShow = async () => {
-    // In a real app, fetch from your API/database
-    // For now, using placeholder data
-    setShow({
-      name: "Sir Elton - At the Piano",
-      description: "The Music of Elton John",
-      venue: "Modern Showrooms at Alexis Park Resort",
-      price: "99.95",
-      discountedPrice: "44.95",
-      duration: "70-75",
-      category: "Tribute",
-      status: "active",
-      image: "/show-placeholder.jpg",
-    })
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
 
     try {
-      // Here you would save to your API/database
-      // await fetch('/api/shows', { method: 'POST', body: JSON.stringify(show) })
-      
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      
-      alert(id === "new" ? "Show created successfully!" : "Show updated successfully!")
-      router.push("/dashboard/shows")
-    } catch (error: any) {
-      alert("Error saving show: " + error.message)
+      const payload = {
+        name: show.name,
+        description: show.description || null,
+        price: show.price ? Number(show.price) : null,
+        discounted_price: show.discountedPrice
+          ? Number(show.discountedPrice)
+          : null,
+        duration_minutes: show.duration || null,
+        category: show.category || null,
+        status: show.status || "active",
+        image_url: show.image || null,
+      };
+
+      let error;
+      if (isNew) {
+        ({ error } = await supabase.from("shows").insert(payload));
+      } else {
+        ({ error } = await supabase.from("shows").update(payload).eq("id", id));
+      }
+
+      if (error) {
+        console.error(error);
+        alert("Error saving show: " + error.message);
+      } else {
+        alert(
+          isNew ? "Show created successfully!" : "Show updated successfully!"
+        );
+      }
+
+      router.push("/dashboard/shows");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Unknown error occurred";
+      alert("Error saving show: " + message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -82,7 +138,9 @@ export default function EditShowPage() {
             {id === "new" ? "Create New Show" : "Edit Show"}
           </h1>
           <p className="text-muted-foreground">
-            {id === "new" ? "Add a new show to your listings" : "Update show information"}
+            {id === "new"
+              ? "Add a new show to your listings"
+              : "Update show information"}
           </p>
         </div>
       </div>
@@ -118,6 +176,32 @@ export default function EditShowPage() {
                   className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                   placeholder="The Music of Elton John"
                 />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="image">Show Image URL (optional)</Label>
+                <Input
+                  id="image"
+                  type="url"
+                  placeholder="https://..."
+                  disabled={loading}
+                  value={show.image}
+                  onChange={(e) =>
+                    setShow((prev) => ({ ...prev, image: e.target.value }))
+                  }
+                />
+                {show.image && (
+                  <div className="relative mt-2 h-16 w-28 overflow-hidden rounded-md border bg-muted">
+                    <Image
+                      src={show.image}
+                      alt={show.name || "Show image preview"}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Paste a hosted image URL from your CDN or Supabase Storage.
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -202,9 +286,7 @@ export default function EditShowPage() {
                 <select
                   id="status"
                   value={show.status}
-                  onChange={(e) =>
-                    setShow({ ...show, status: e.target.value })
-                  }
+                  onChange={(e) => setShow({ ...show, status: e.target.value })}
                   disabled={loading}
                   className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                 >
@@ -242,6 +324,5 @@ export default function EditShowPage() {
         </div>
       </form>
     </div>
-  )
+  );
 }
-

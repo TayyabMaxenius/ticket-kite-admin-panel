@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -25,8 +25,8 @@ type Profile = {
 export default function SettingsPage() {
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState<Profile>({
-    name: "Admin User",
-    email: "admin@ticketkite.com",
+    name: "Zain",
+    email: "zain@maxenius.agency",
     phone: "",
     avatar: "",
   });
@@ -34,6 +34,8 @@ export default function SettingsPage() {
   useEffect(() => {
     loadUser();
   }, []);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const loadUser = () => {
     const user = getUser() as (User & { phone?: string }) | null;
@@ -65,6 +67,21 @@ export default function SettingsPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result as string;
+      setProfile((prev) => ({
+        ...prev,
+        avatar: result,
+      }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleUpdatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -134,13 +151,18 @@ export default function SettingsPage() {
                   size="icon"
                   variant="outline"
                   className="absolute bottom-0 right-0 rounded-full"
-                  onClick={() => {
-                    // Handle image upload
-                    alert("Image upload functionality can be added here");
-                  }}
+                  onClick={() => fileInputRef.current?.click()}
                 >
                   <Upload className="h-4 w-4" />
                 </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                  disabled={loading}
+                />
               </div>
             </div>
 

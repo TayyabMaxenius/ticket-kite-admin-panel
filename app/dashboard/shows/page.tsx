@@ -1,16 +1,22 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import Image from "next/image"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Plus, Search, Filter, MoreVertical, Edit, Trash2 } from "lucide-react"
+import Link from "next/link";
+import Image from "next/image";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Plus, Search, Filter, MoreVertical, Edit, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 export default function ShowsPage() {
   return (
@@ -77,13 +83,21 @@ export default function ShowsPage() {
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Button
+                      id={`show-menu-${item}`}
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                    >
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem asChild>
-                      <Link href={`/dashboard/shows/${item}`} className="flex items-center">
+                      <Link
+                        href={`/dashboard/shows/${item}`}
+                        className="flex items-center"
+                      >
                         <Edit className="mr-2 h-4 w-4" />
                         Edit
                       </Link>
@@ -118,6 +132,5 @@ export default function ShowsPage() {
         ))}
       </div>
     </div>
-  )
+  );
 }
-

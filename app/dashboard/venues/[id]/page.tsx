@@ -25,6 +25,7 @@ export default function EditVenuePage() {
     email: "",
     website: "",
     status: "active",
+    image: "",
   })
 
   useEffect(() => {
@@ -49,6 +50,7 @@ export default function EditVenuePage() {
         email: "info@modernshowrooms.com",
         website: "https://modernshowrooms.com",
         status: "active",
+        image: "",
       },
       "2": {
         name: "Alexis Park & Resort",
@@ -61,6 +63,7 @@ export default function EditVenuePage() {
         email: "info@alexispark.com",
         website: "https://alexispark.com",
         status: "active",
+        image: "",
       },
       "3": {
         name: "Ahern Live Showroom",
@@ -73,6 +76,7 @@ export default function EditVenuePage() {
         email: "info@ahernlive.com",
         website: "https://ahernlive.com",
         status: "active",
+        image: "",
       },
       "4": {
         name: "OYO Hotel & Casino",
@@ -85,6 +89,7 @@ export default function EditVenuePage() {
         email: "info@oyohotel.com",
         website: "https://oyohotel.com",
         status: "active",
+        image: "",
       },
     }
 
@@ -162,6 +167,42 @@ export default function EditVenuePage() {
                   disabled={loading}
                   placeholder="300"
                 />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="image">Venue Image</Label>
+                <div className="flex items-center gap-4">
+                  {venue.image && (
+                    <div className="relative h-20 w-32 overflow-hidden rounded-md border bg-muted">
+                      <img
+                        src={venue.image}
+                        alt={venue.name || "Venue image"}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <Input
+                    id="image"
+                    type="file"
+                    accept="image/*"
+                    disabled={loading}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (!file) return
+                      const reader = new FileReader()
+                      reader.onloadend = () => {
+                        const result = reader.result as string
+                        setVenue((prev) => ({
+                          ...prev,
+                          image: result,
+                        }))
+                      }
+                      reader.readAsDataURL(file)
+                    }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Upload an image for this venue (JPG or PNG).
+                </p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="status">Status</Label>

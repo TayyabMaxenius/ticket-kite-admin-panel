@@ -4,16 +4,27 @@ export async function proxy(request: NextRequest) {
   // Simple auth check using cookies
   // In production, use proper session management
   const authCookie = request.cookies.get("auth")?.value;
+  const role = request.cookies.get("role")?.value as "admin" | "user" | undefined;
+  const { pathname } = request.nextUrl;
 
   // Protect dashboard routes
-  if (request.nextUrl.pathname.startsWith("/dashboard")) {
+  if (pathname.startsWith("/dashboard")) {
     if (!authCookie || authCookie !== "authenticated") {
       return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    // Restrict some routes to admin only
+    const adminOnlyPrefixes = ["/dashboard/settings", "/dashboard/analytics", "/dashboard/venues"];
+    if (
+      role !== "admin" &&
+      adminOnlyPrefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`))
+    ) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
     }
   }
 
   // Redirect authenticated users away from login
-  if (request.nextUrl.pathname === "/login" && authCookie === "authenticated") {
+  if (pathname === "/dashboard/login" && authCookie === "authenticated") {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

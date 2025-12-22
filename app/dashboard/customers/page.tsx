@@ -1,7 +1,12 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Search } from "lucide-react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Search } from "lucide-react";
 
 export default function CustomersPage() {
   const customers = [
@@ -29,7 +34,7 @@ export default function CustomersPage() {
       totalSpent: "$712.60",
       lastOrder: "2025-12-18",
     },
-  ]
+  ];
 
   return (
     <div className="space-y-6">
@@ -57,7 +62,10 @@ export default function CustomersPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {customers.map((customer) => (
-          <Card key={customer.id} className="hover:shadow-xl transition-shadow duration-200">
+          <Card
+            key={customer.id}
+            className="hover:shadow-xl transition-shadow duration-200"
+          >
             <CardHeader>
               <div className="flex items-center gap-4">
                 <Avatar className="h-12 w-12 ring-2 ring-primary/20">
@@ -95,6 +103,5 @@ export default function CustomersPage() {
         ))}
       </div>
     </div>
-  )
+  );
 }
-

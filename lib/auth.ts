@@ -8,6 +8,7 @@ export interface User {
   email: string;
   name: string;
   avatar?: string;
+  role?: "admin" | "user";
 }
 
 const AUTH_KEY = "ticketkite_admin_auth";
@@ -15,13 +16,26 @@ const USER_KEY = "ticketkite_admin_user";
 
 export function signIn(email: string, password: string): Promise<User> {
   return new Promise((resolve, reject) => {
-    // Simple demo authentication
+    // Strict authentication - only two users allowed
     // In production, this should call your API
-    if (email && password) {
+    if (!email || !password) {
+      reject(new Error("Email and password are required"));
+      return;
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedPassword = password.trim();
+
+    // Check for admin user
+    if (
+      normalizedEmail === "zain@maxenius.agency" &&
+      normalizedPassword === "zain@12"
+    ) {
       const user: User = {
         id: "1",
-        email: email,
-        name: "Admin User",
+        email: normalizedEmail,
+        name: "Zain",
+        role: "admin",
       };
 
       localStorage.setItem(AUTH_KEY, "authenticated");
@@ -29,11 +43,41 @@ export function signIn(email: string, password: string): Promise<User> {
 
       // Set cookie for middleware
       document.cookie = "auth=authenticated; path=/; max-age=86400"; // 24 hours
+      document.cookie = "role=admin; path=/; max-age=86400"; // 24 hours
 
       setTimeout(() => resolve(user), 500); // Simulate API call
-    } else {
-      reject(new Error("Invalid credentials"));
+      return;
     }
+
+    // Check for standard user
+    if (
+      normalizedEmail === "user@maxenius.agency" &&
+      normalizedPassword === "user@12"
+    ) {
+      const user: User = {
+        id: "2",
+        email: normalizedEmail,
+        name: "User",
+        role: "user",
+      };
+
+      localStorage.setItem(AUTH_KEY, "authenticated");
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+
+      // Set cookie for middleware
+      document.cookie = "auth=authenticated; path=/; max-age=86400"; // 24 hours
+      document.cookie = "role=user; path=/; max-age=86400"; // 24 hours
+
+      setTimeout(() => resolve(user), 500); // Simulate API call
+      return;
+    }
+
+    // Reject all other credentials
+    reject(
+      new Error(
+        "Invalid email or password. Only authorized users can access this system."
+      )
+    );
   });
 }
 
@@ -44,6 +88,7 @@ export function signOut(): Promise<void> {
 
     // Remove cookie
     document.cookie = "auth=; path=/; max-age=0";
+    document.cookie = "role=; path=/; max-age=0";
 
     setTimeout(() => resolve(), 100);
   });
