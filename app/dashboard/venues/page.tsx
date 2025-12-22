@@ -1,16 +1,22 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import Image from "next/image"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Plus, Search, MapPin, MoreVertical, Edit, Trash2 } from "lucide-react"
+import Link from "next/link";
+import Image from "next/image";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Plus, Search, MapPin, MoreVertical, Edit, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 export default function VenuesPage() {
   const venues = [
@@ -42,7 +48,7 @@ export default function VenuesPage() {
       shows: 6,
       capacity: 200,
     },
-  ]
+  ];
 
   return (
     <div className="space-y-6">
@@ -101,13 +107,21 @@ export default function VenuesPage() {
                 </div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Button
+                      id={`venue-menu-${venue.id}`}
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                    >
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem asChild>
-                      <Link href={`/dashboard/venues/${venue.id}`} className="flex items-center">
+                      <Link
+                        href={`/dashboard/venues/${venue.id}`}
+                        className="flex items-center"
+                      >
                         <Edit className="mr-2 h-4 w-4" />
                         Edit
                       </Link>
@@ -136,6 +150,5 @@ export default function VenuesPage() {
         ))}
       </div>
     </div>
-  )
+  );
 }
-
