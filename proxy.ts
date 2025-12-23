@@ -14,7 +14,15 @@ export async function proxy(request: NextRequest) {
     }
 
     // Restrict some routes to admin only
-    const adminOnlyPrefixes = ["/dashboard/settings", "/dashboard/analytics", "/dashboard/venues"];
+    const adminOnlyPrefixes = [
+      "/dashboard/settings",
+      "/dashboard/analytics",
+      "/dashboard/venues",
+      "/dashboard/tours",
+      "/dashboard/attractions",
+      "/dashboard/hotels",
+      "/dashboard/tips",
+    ];
     if (
       role !== "admin" &&
       adminOnlyPrefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`))

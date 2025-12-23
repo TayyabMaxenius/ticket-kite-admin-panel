@@ -14,8 +14,6 @@ import {
   Calendar,
   BarChart3,
   Sparkles,
-  ChevronDown,
-  ChevronUp,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -53,22 +51,10 @@ const menuItems: MenuItem[] = [
     roles: ["admin", "user"],
   },
   {
-    title: "Tours",
-    href: "/dashboard/tours",
-    icon: Ticket,
-    roles: ["admin", "user"],
-  },
-  {
-    title: "Attractions",
-    href: "/dashboard/attractions",
-    icon: Ticket,
-    roles: ["admin", "user"],
-  },
-  {
-    title: "Hotels",
-    href: "/dashboard/hotels",
-    icon: Building2,
-    roles: ["admin", "user"],
+    title: "Other Shows",
+    href: "/dashboard/other-shows",
+    icon: Sparkles,
+    roles: ["admin"],
   },
   {
     title: "Venues",
@@ -110,7 +96,7 @@ const menuItems: MenuItem[] = [
     title: "Tips & Tricks",
     href: "/dashboard/tips",
     icon: Sparkles,
-    roles: ["admin", "user"],
+    roles: ["admin"],
   },
   {
     title: "Settings",
@@ -123,7 +109,6 @@ const menuItems: MenuItem[] = [
 export function Sidebar() {
   const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
-  const [otherShowsOpen, setOtherShowsOpen] = useState(false);
 
   // Load current user only on the client to avoid hydration mismatches.
   useEffect(() => {
@@ -161,82 +146,6 @@ export function Sidebar() {
             const Icon = item.icon;
             const isActive =
               pathname === item.href || pathname?.startsWith(item.href + "/");
-
-            // Group Tours/Attractions/Hotels under an "Other Shows" dropdown under Shows
-            if (item.title === "Shows") {
-              const role: Role = (user?.role as Role) ?? "user";
-              const otherShowItems = menuItems.filter(
-                (m) =>
-                  ["Tours", "Attractions", "Hotels"].includes(m.title) &&
-                  (!m.roles || m.roles.includes(role))
-              );
-
-              return (
-                <div key={item.href} className="space-y-1">
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 hover:scale-[1.02] hover:shadow-md",
-                      isActive
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                    )}
-                  >
-                    <Icon className="h-5 w-5" />
-                    {item.title}
-                  </Link>
-                  {otherShowItems.length > 0 && (
-                    <DropdownMenu
-                      open={otherShowsOpen}
-                      onOpenChange={setOtherShowsOpen}
-                    >
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          id="other-shows-menu"
-                          variant="ghost"
-                          className="w-full justify-between px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                        >
-                          <span className="flex items-center gap-2">
-                            <Sparkles className="h-4 w-4" />
-                            Other Shows
-                          </span>
-                          {otherShowsOpen ? (
-                            <ChevronUp className="h-4 w-4" />
-                          ) : (
-                            <ChevronDown className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        {otherShowItems.map((sub) => {
-                          const SubIcon = sub.icon;
-                          return (
-                            <DropdownMenuItem asChild key={sub.href}>
-                              <Link
-                                href={sub.href}
-                                className="flex items-center gap-2"
-                              >
-                                <SubIcon className="h-4 w-4" />
-                                <span>{sub.title}</span>
-                              </Link>
-                            </DropdownMenuItem>
-                          );
-                        })}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
-                </div>
-              );
-            }
-
-            // Skip Tours/Attractions/Hotels as top-level items (they are inside Other Shows)
-            if (
-              item.title === "Tours" ||
-              item.title === "Attractions" ||
-              item.title === "Hotels"
-            ) {
-              return null;
-            }
 
             return (
               <Link
