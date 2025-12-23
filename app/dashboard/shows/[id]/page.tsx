@@ -23,6 +23,7 @@ export default function EditShowPage() {
   const id = params?.id as string;
   const isNew = id === "new";
   const [loading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [show, setShow] = useState({
     name: "",
     description: "",
@@ -33,6 +34,7 @@ export default function EditShowPage() {
     category: "",
     status: "active",
     image: "",
+    imageTitle: "",
   });
 
   const loadShow = async () => {
@@ -69,6 +71,7 @@ export default function EditShowPage() {
       category: data.category ?? "",
       status: data.status ?? "active",
       image: data.image_url ?? "",
+      imageTitle: "",
     });
     setLoading(false);
   };
@@ -125,6 +128,85 @@ export default function EditShowPage() {
     }
   };
 
+  const handleImageFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      alert(
+        "Image size must be less than 10MB. Please choose a smaller image."
+      );
+      return;
+    }
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      alert("Please select a valid image file.");
+      return;
+    }
+
+    try {
+      setUploadingImage(true);
+
+      const ext = file.name.split(".").pop() ?? "jpg";
+      const fileName = `${crypto.randomUUID()}.${ext}`;
+      const filePath = `shows/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("show-images")
+        .upload(filePath, file, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      if (uploadError) {
+        console.error("Upload error:", uploadError);
+
+        // Provide more specific error messages
+        let errorMessage = "Failed to upload image. ";
+        if (uploadError.message.includes("Bucket not found")) {
+          errorMessage +=
+            "The storage bucket 'show-images' does not exist. Please create it in your Supabase dashboard.";
+        } else if (
+          uploadError.message.includes("new row violates row-level security")
+        ) {
+          errorMessage +=
+            "Permission denied. Please check your Supabase Storage policies.";
+        } else if (
+          uploadError.message.includes("The resource already exists")
+        ) {
+          errorMessage +=
+            "An image with this name already exists. Please try again.";
+        } else {
+          errorMessage += uploadError.message || "Please try again.";
+        }
+
+        alert(errorMessage);
+        return;
+      }
+
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("show-images").getPublicUrl(filePath);
+
+      setShow((prev) => ({
+        ...prev,
+        image: publicUrl,
+      }));
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Unknown error occurred";
+      console.error("Unexpected error:", error);
+      alert("Error uploading image: " + message);
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center gap-4">
@@ -178,29 +260,45 @@ export default function EditShowPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="image">Show Image URL (optional)</Label>
+                <Label htmlFor="imageTitle">Show Image Title (optional)</Label>
                 <Input
-                  id="image"
-                  type="url"
-                  placeholder="https://..."
+                  id="imageTitle"
+                  placeholder="Short title for this image"
                   disabled={loading}
-                  value={show.image}
+                  value={show.imageTitle}
                   onChange={(e) =>
-                    setShow((prev) => ({ ...prev, image: e.target.value }))
+                    setShow((prev) => ({ ...prev, imageTitle: e.target.value }))
                   }
                 />
-                {show.image && (
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="imageFile">Show Image (optional)</Label>
+                <Input
+                  id="imageFile"
+                  type="file"
+                  accept="image/*"
+                  disabled={loading || uploadingImage}
+                  onChange={handleImageFileChange}
+                />
+                {uploadingImage && (
+                  <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Uploading image...</span>
+                  </div>
+                )}
+                {show.image && !uploadingImage && (
                   <div className="relative mt-2 h-16 w-28 overflow-hidden rounded-md border bg-muted">
                     <Image
                       src={show.image}
-                      alt={show.name || "Show image preview"}
+                      alt={show.imageTitle || show.name || "Show image preview"}
                       fill
                       className="object-cover"
                     />
                   </div>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Paste a hosted image URL from your CDN or Supabase Storage.
+                  Upload an image from your computer. The file will be saved to
+                  Supabase Storage.
                 </p>
               </div>
             </CardContent>
