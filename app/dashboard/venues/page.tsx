@@ -212,10 +212,10 @@ export default function VenuesPage() {
 
       {/* Venues Grid */}
       {!loading && filteredVenues.length > 0 && (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredVenues.map((venue) => (
             <Card key={venue.id} className="overflow-hidden group">
-              <div className="aspect-video w-full bg-muted relative overflow-hidden">
+              <div className="aspect-[4/3] w-full bg-muted relative overflow-hidden">
                 {venue.image_url ? (
                   <Image
                     src={venue.image_url}
@@ -226,23 +226,23 @@ export default function VenuesPage() {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
-                    <span className="text-muted-foreground text-sm">
+                    <span className="text-muted-foreground text-xs">
                       No Image
                     </span>
                   </div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5" />
               </div>
-              <CardHeader>
-                <div className="flex items-start justify-between">
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <CardTitle className="flex items-center gap-2">
-                      <MapPin className="h-5 w-5 text-primary flex-shrink-0" />
+                    <CardTitle className="flex items-center gap-1.5 text-base">
+                      <MapPin className="h-4 w-4 text-primary flex-shrink-0" />
                       <span className="truncate">
                         {venue.name || "Untitled Venue"}
                       </span>
                     </CardTitle>
-                    <CardDescription className="truncate">
+                    <CardDescription className="truncate text-xs mt-1">
                       {formatAddress(venue)}
                     </CardDescription>
                   </div>
@@ -252,9 +252,9 @@ export default function VenuesPage() {
                         id={`venue-menu-${venue.id}`}
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 flex-shrink-0"
+                        className="h-7 w-7 flex-shrink-0"
                       >
-                        <MoreVertical className="h-4 w-4" />
+                        <MoreVertical className="h-3.5 w-3.5" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
@@ -280,17 +280,17 @@ export default function VenuesPage() {
                   </DropdownMenu>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4">
+              <CardContent className="pt-0">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <p className="text-sm text-muted-foreground">Status</p>
-                    <p className="text-lg font-semibold capitalize">
+                    <p className="text-xs text-muted-foreground">Status</p>
+                    <p className="text-sm font-semibold capitalize">
                       {venue.status || "active"}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Capacity</p>
-                    <p className="text-2xl font-bold">
+                    <p className="text-xs text-muted-foreground">Capacity</p>
+                    <p className="text-lg font-bold">
                       {venue.capacity || "N/A"}
                     </p>
                   </div>
