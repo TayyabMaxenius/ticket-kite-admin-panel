@@ -52,11 +52,10 @@ export default function ShowsPage() {
   const loadShows = async () => {
     try {
       setLoading(true);
+      // Fetch minimal columns (for filtering) + data JSONB
       const { data, error } = await supabase
         .from("shows")
-        .select(
-          "id, name, description, price, discounted_price, duration_minutes, category, status, image_url"
-        )
+        .select("id, venue_id, status, product_slug, product_id, series_id, title, series_code, data")
         .order("created_at", { ascending: false });
 
       if (error) {
@@ -65,7 +64,41 @@ export default function ShowsPage() {
         return;
       }
 
-      setShows(data || []);
+      // Transform data from JSONB to display format
+      const transformedShows = (data || []).map((show: {
+        id: number;
+        venue_id: number | null; // integer type
+        status: string | null;
+        product_slug?: string | null;
+        product_id?: number | null;
+        series_id?: string | null;
+        title?: string | null;
+        series_code?: string | null;
+        data: Record<string, unknown> | null;
+      }) => {
+        const showData = show.data || {};
+        const categories = Array.isArray(showData.categories) ? showData.categories : [];
+        // Use column values if available, otherwise fallback to JSONB data
+        return {
+          id: show.id,
+          name: (show.title as string) || (showData.title as string) || (showData.name as string) || "",
+          description: (showData.description as string) || null,
+          price: showData.regular_price
+            ? parseFloat(String(showData.regular_price))
+            : (showData.price ? parseFloat(String(showData.price)) : null),
+          discounted_price: showData.sale_price
+            ? parseFloat(String(showData.sale_price))
+            : (showData.discounted_price ? parseFloat(String(showData.discounted_price)) : null),
+          duration_minutes: (showData.duration_minutes as string) || null,
+          category: (showData.category as string) ||
+            (categories.length > 0 && (categories[0] as { name?: string })?.name) ||
+            null,
+          status: show.status || "active",
+          image_url: (showData.img_src as string) || (showData.image_url as string) || null,
+        };
+      });
+
+      setShows(transformedShows);
     } catch (error) {
       console.error("Unexpected error:", error);
       alert("Failed to load shows");
@@ -220,13 +253,13 @@ export default function ShowsPage() {
                     unoptimized
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
+                  <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-primary/20 to-primary/5">
                     <span className="text-muted-foreground text-sm">
                       No Image
                     </span>
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5" />
+                <div className="absolute inset-0 bg-linear-to-br from-primary/20 to-primary/5" />
               </div>
               <CardHeader>
                 <div className="flex items-start justify-between">
@@ -246,7 +279,7 @@ export default function ShowsPage() {
                         id={`show-menu-${show.id}`}
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 flex-shrink-0"
+                        className="h-8 w-8 shrink-0"
                       >
                         <MoreVertical className="h-4 w-4" />
                       </Button>
