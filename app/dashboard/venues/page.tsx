@@ -27,28 +27,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabase/client";
+import { Toast } from "./_components/Toast";
 
 interface Venue {
   id: number;
-  name: string;
-  parent_venue: string | null;
-  address: string | null;
-  city: string | null;
-  state: string | null;
-  zip_code: string | null;
-  capacity: number | null;
-  phone: string | null;
-  email: string | null;
-  website: string | null;
+  title: string;
+  subheading: string | null;
+  img_src: string | null;
+  description: string | null;
+  show_url: string | null;
   status: string | null;
-  image_url: string | null;
 }
 
 export default function VenuesPage() {
   const [venues, setVenues] = useState<Venue[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [parentFilter, setParentFilter] = useState<string>("");
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
 
   useEffect(() => {
     loadVenues();
@@ -59,28 +57,26 @@ export default function VenuesPage() {
       setLoading(true);
       const { data, error } = await supabase
         .from("venues")
-        .select(
-          "id, name, parent_venue, address, city, state, zip_code, capacity, phone, email, website, status, image_url"
-        )
+        .select("id, title, subheading, img_src, description, show_url, status")
         .order("created_at", { ascending: false });
 
       if (error) {
         console.error("Error loading venues:", error);
-        alert("Failed to load venues: " + error.message);
+        setToast({ message: "Failed to load venues: " + error.message, type: "error" });
         return;
       }
 
       setVenues(data || []);
     } catch (error) {
       console.error("Unexpected error:", error);
-      alert("Failed to load venues");
+      setToast({ message: "Failed to load venues", type: "error" });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDelete = async (venueId: number, venueName: string) => {
-    if (!confirm(`Are you sure you want to delete "${venueName}"?`)) {
+  const handleDelete = async (venueId: number, venueTitle: string) => {
+    if (!confirm(`Are you sure you want to delete "${venueTitle}"?`)) {
       return;
     }
 
@@ -92,58 +88,44 @@ export default function VenuesPage() {
 
       if (error) {
         console.error("Error deleting venue:", error);
-        alert("Failed to delete venue: " + error.message);
+        setToast({ message: "Failed to delete venue: " + error.message, type: "error" });
         return;
       }
 
       // Reload venues after deletion
       await loadVenues();
-      alert("Venue deleted successfully!");
+      setToast({ message: "Venue deleted successfully!", type: "success" });
     } catch (error) {
       console.error("Unexpected error:", error);
-      alert("Failed to delete venue");
+      setToast({ message: "Failed to delete venue", type: "error" });
     }
   };
 
   const filteredVenues = venues.filter((venue) => {
-    if (parentFilter && venue.parent_venue !== parentFilter) {
-      return false;
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      return (
+        venue.title?.toLowerCase().includes(query) ||
+        venue.subheading?.toLowerCase().includes(query) ||
+        venue.description?.toLowerCase().includes(query)
+      );
     }
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    const fullAddress = `${venue.address || ""} ${venue.city || ""} ${
-      venue.state || ""
-    } ${venue.zip_code || ""}`.toLowerCase();
-    return (
-      venue.name?.toLowerCase().includes(query) || fullAddress.includes(query)
-    );
+    return true;
   });
 
-  const formatAddress = (venue: Venue) => {
-    const parts = [
-      venue.address,
-      venue.city,
-      venue.state && venue.zip_code
-        ? `${venue.state} ${venue.zip_code}`
-        : venue.state || venue.zip_code,
-    ].filter(Boolean);
-    return parts.length > 0 ? parts.join(", ") : "No address";
-  };
-
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Venues</h1>
           <p className="text-muted-foreground">
-            Manage all venues and showrooms
+            Manage your venue listings
           </p>
         </div>
         <Button asChild>
           <Link href="/dashboard/venues/new">
             <Plus className="mr-2 h-4 w-4" />
-            Add New Venue
+            Add Venue
           </Link>
         </Button>
       </div>
@@ -151,33 +133,15 @@ export default function VenuesPage() {
       {/* Search */}
       <Card>
         <CardContent className="pt-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search venues by name or address..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-md border border-input bg-background px-10 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Main venue:</span>
-              <select
-                value={parentFilter}
-                onChange={(e) => setParentFilter(e.target.value)}
-                className="flex h-9 rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <option value="">All</option>
-                <option value="Alexis Park Resort">Alexis Park Resort</option>
-                <option value="Ahern Live Showroom">Ahern Live Showroom</option>
-                <option value="OYO Hotel & Casino">OYO Hotel & Casino</option>
-                <option value="Hennessey’s Tavern Las Vegas">
-                  Hennessey’s Tavern Las Vegas
-                </option>
-              </select>
-            </div>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search venues by title, subheading, or description..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full rounded-md border border-input bg-background px-10 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            />
           </div>
         </CardContent>
       </Card>
@@ -193,16 +157,20 @@ export default function VenuesPage() {
       {!loading && filteredVenues.length === 0 && (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <p className="text-muted-foreground mb-4">
+            <MapPin className="h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">
+              {searchQuery ? "No venues found" : "No venues yet"}
+            </h3>
+            <p className="text-muted-foreground text-center mb-4">
               {searchQuery
-                ? "No venues found matching your search."
-                : "No venues found. Create your first venue to get started."}
+                ? "Try adjusting your search query"
+                : "Get started by adding your first venue"}
             </p>
             {!searchQuery && (
               <Button asChild>
                 <Link href="/dashboard/venues/new">
                   <Plus className="mr-2 h-4 w-4" />
-                  Add New Venue
+                  Add Venue
                 </Link>
               </Button>
             )}
@@ -214,64 +182,47 @@ export default function VenuesPage() {
       {!loading && filteredVenues.length > 0 && (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredVenues.map((venue) => (
-            <Card key={venue.id} className="overflow-hidden group">
-              <div className="aspect-[4/3] w-full bg-muted relative overflow-hidden">
-                {venue.image_url ? (
+            <Card key={venue.id} className="overflow-hidden">
+              {venue.img_src && (
+                <div className="relative h-48 w-full overflow-hidden bg-muted">
                   <Image
-                    src={venue.image_url}
-                    alt={venue.name || "Venue image"}
+                    src={venue.img_src}
+                    alt={venue.title || "Venue image"}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="object-cover"
                     unoptimized
                   />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
-                    <span className="text-muted-foreground text-xs">
-                      No Image
-                    </span>
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5" />
-              </div>
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <CardTitle className="flex items-center gap-1.5 text-base">
-                      <MapPin className="h-4 w-4 text-primary flex-shrink-0" />
-                      <span className="truncate">
-                        {venue.name || "Untitled Venue"}
-                      </span>
-                    </CardTitle>
-                    <CardDescription className="truncate text-xs mt-1">
-                      {formatAddress(venue)}
-                    </CardDescription>
+                </div>
+              )}
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <CardTitle className="text-lg">{venue.title}</CardTitle>
+                    {venue.subheading && (
+                      <CardDescription className="mt-1">
+                        {venue.subheading}
+                      </CardDescription>
+                    )}
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button
-                        id={`venue-menu-${venue.id}`}
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 flex-shrink-0"
-                      >
-                        <MoreVertical className="h-3.5 w-3.5" />
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreVertical className="h-4 w-4" />
+                        <span className="sr-only">Open menu</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem asChild>
-                        <Link
-                          href={`/dashboard/venues/${venue.id}`}
-                          className="flex items-center"
-                        >
+                        <Link href={`/dashboard/venues/${venue.id}`}>
                           <Edit className="mr-2 h-4 w-4" />
                           Edit
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        className="text-destructive"
                         onClick={() =>
-                          handleDelete(venue.id, venue.name || "this venue")
+                          handleDelete(venue.id, venue.title || "this venue")
                         }
+                        className="text-destructive"
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
                         Delete
@@ -280,25 +231,38 @@ export default function VenuesPage() {
                   </DropdownMenu>
                 </div>
               </CardHeader>
+              {venue.description && (
+                <CardContent>
+                  <p className="text-sm text-muted-foreground line-clamp-3">
+                    {venue.description}
+                  </p>
+                </CardContent>
+              )}
               <CardContent className="pt-0">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Status</p>
-                    <p className="text-sm font-semibold capitalize">
-                      {venue.status || "active"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Capacity</p>
-                    <p className="text-lg font-bold">
-                      {venue.capacity || "N/A"}
-                    </p>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${venue.status === "active"
+                      ? "bg-green-100 text-green-800"
+                      : venue.status === "inactive"
+                        ? "bg-red-100 text-red-800"
+                        : "bg-gray-100 text-gray-800"
+                      }`}
+                  >
+                    {venue.status || "active"}
+                  </span>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
+      )}
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
       )}
     </div>
   );

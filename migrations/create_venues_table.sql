@@ -8,18 +8,12 @@
 
 CREATE TABLE venues (
   id serial PRIMARY KEY,
-  name text NOT NULL,
-  parent_venue text,
-  address text,
-  city text,
-  state text,
-  zip_code text,
-  capacity integer,
-  phone text,
-  email text,
-  website text,
+  title text NOT NULL,
+  subheading text,
+  img_src text,
+  description text,
+  show_url text,
   status text DEFAULT 'active',
-  image_url text,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
@@ -31,14 +25,11 @@ CREATE TABLE venues (
 -- Index for status (for filtering active/inactive)
 CREATE INDEX idx_venues_status ON venues(status);
 
--- Index for name (for searching)
-CREATE INDEX idx_venues_name ON venues(name);
-
--- Index for parent_venue (for filtering by parent)
-CREATE INDEX idx_venues_parent_venue ON venues(parent_venue) WHERE parent_venue IS NOT NULL;
+-- Index for title (for searching)
+CREATE INDEX idx_venues_title ON venues(title);
 
 -- Composite index for common queries
-CREATE INDEX idx_venues_status_name ON venues(status, name) WHERE status = 'active';
+CREATE INDEX idx_venues_status_title ON venues(status, title) WHERE status = 'active';
 
 -- ============================================
 -- CREATE TRIGGER FOR UPDATED_AT
