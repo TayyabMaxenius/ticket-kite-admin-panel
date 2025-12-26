@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Save, Loader2, ImageIcon } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase/client";
-import { Toast } from "./_components/Toast";
+import { toast } from "@/lib/toast";
 import { ImageSelectModal } from "./_components/ImageSelectModal";
 
 export default function EditVenuePage() {
@@ -25,10 +25,6 @@ export default function EditVenuePage() {
   const id = params?.id as string;
   const [loading, setLoading] = useState(false);
   const [imageModalOpen, setImageModalOpen] = useState(false);
-  const [toast, setToast] = useState<{
-    message: string;
-    type: "success" | "error";
-  } | null>(null);
   const [venue, setVenue] = useState({
     title: "",
     subheading: "",
@@ -108,12 +104,9 @@ export default function EditVenuePage() {
 
       if (error) {
         console.error("Error saving venue:", error);
-        setToast({ message: "Error saving venue: " + error.message, type: "error" });
+        toast.error("Error saving venue: " + error.message);
       } else {
-        setToast({
-          message: id === "new" ? "Venue created successfully!" : "Venue updated successfully!",
-          type: "success",
-        });
+        toast.success(id === "new" ? "Venue created successfully!" : "Venue updated successfully!");
         setTimeout(() => {
           router.push("/dashboard/venues");
         }, 1500);
@@ -121,7 +114,7 @@ export default function EditVenuePage() {
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : "Unknown error occurred";
-      setToast({ message: "Error saving venue: " + message, type: "error" });
+      toast.error("Error saving venue: " + message);
     } finally {
       setLoading(false);
     }
@@ -298,14 +291,6 @@ export default function EditVenuePage() {
           </Button>
         </div>
       </form>
-
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
 
       <ImageSelectModal
         isOpen={imageModalOpen}

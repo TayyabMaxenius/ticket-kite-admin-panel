@@ -94,8 +94,8 @@ export default function AnalyticsPage() {
               <option value="12m">Last 12 months</option>
             </select>
           </CardHeader>
-          <CardContent className="h-[360px]">
-            <ResponsiveContainer width="100%" height="100%">
+          <CardContent className="h-[360px] min-h-0">
+            <ResponsiveContainer width="100%" height="100%" minHeight={0}>
               <LineChart data={monthlyData} margin={{ left: -20 }}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                 <XAxis dataKey="month" />
@@ -146,8 +146,8 @@ export default function AnalyticsPage() {
               ))}
             </select>
           </CardHeader>
-          <CardContent className="h-[360px]">
-            <ResponsiveContainer width="100%" height="100%">
+          <CardContent className="h-[360px] min-h-0">
+            <ResponsiveContainer width="100%" height="100%" minHeight={0}>
               <BarChart
                 data={filteredShows}
                 barCategoryGap={20}

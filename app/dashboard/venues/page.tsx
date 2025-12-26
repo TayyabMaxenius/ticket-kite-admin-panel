@@ -27,7 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabase/client";
-import { Toast } from "./_components/Toast";
+import { toast } from "@/lib/toast";
 
 interface Venue {
   id: number;
@@ -43,10 +43,6 @@ export default function VenuesPage() {
   const [venues, setVenues] = useState<Venue[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [toast, setToast] = useState<{
-    message: string;
-    type: "success" | "error";
-  } | null>(null);
 
   useEffect(() => {
     loadVenues();
@@ -62,14 +58,14 @@ export default function VenuesPage() {
 
       if (error) {
         console.error("Error loading venues:", error);
-        setToast({ message: "Failed to load venues: " + error.message, type: "error" });
+        toast.error("Failed to load venues: " + error.message);
         return;
       }
 
       setVenues(data || []);
     } catch (error) {
       console.error("Unexpected error:", error);
-      setToast({ message: "Failed to load venues", type: "error" });
+      toast.error("Failed to load venues");
     } finally {
       setLoading(false);
     }
@@ -88,16 +84,16 @@ export default function VenuesPage() {
 
       if (error) {
         console.error("Error deleting venue:", error);
-        setToast({ message: "Failed to delete venue: " + error.message, type: "error" });
+        toast.error("Failed to delete venue: " + error.message);
         return;
       }
 
       // Reload venues after deletion
       await loadVenues();
-      setToast({ message: "Venue deleted successfully!", type: "success" });
+      toast.success("Venue deleted successfully!");
     } catch (error) {
       console.error("Unexpected error:", error);
-      setToast({ message: "Failed to delete venue", type: "error" });
+      toast.error("Failed to delete venue");
     }
   };
 
@@ -257,13 +253,6 @@ export default function VenuesPage() {
         </div>
       )}
 
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
     </div>
   );
 }

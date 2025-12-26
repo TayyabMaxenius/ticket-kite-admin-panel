@@ -14,6 +14,9 @@ import {
   Calendar,
   BarChart3,
   Sparkles,
+  Tag,
+  FolderTree,
+  TicketPercent,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -60,6 +63,24 @@ const menuItems: MenuItem[] = [
     title: "Venues",
     href: "/dashboard/venues",
     icon: Building2,
+    roles: ["admin"],
+  },
+  {
+    title: "Categories",
+    href: "/dashboard/categories",
+    icon: FolderTree,
+    roles: ["admin"],
+  },
+  {
+    title: "Tags",
+    href: "/dashboard/tags",
+    icon: Tag,
+    roles: ["admin"],
+  },
+  {
+    title: "Promotions",
+    href: "/dashboard/promotions",
+    icon: TicketPercent,
     roles: ["admin"],
   },
   {

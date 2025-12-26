@@ -16,14 +16,19 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Save, Loader2, Plus, X } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase/client";
-import { CategoryModal } from "./_components/CategoryModal";
-import { TagModal } from "./_components/TagModal";
 import { ShowFeatureModal } from "./_components/ShowFeatureModal";
 import { CastMemberModal } from "./_components/CastMemberModal";
 import { VenueDetailModal } from "./_components/VenueDetailModal";
 import { GalleryMediaModal } from "./_components/GalleryMediaModal";
-import { Toast } from "./_components/Toast";
+import { toast } from "@/lib/toast";
 import { showTemplateData } from "./_components/showTemplateData";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function EditShowPage() {
   const router = useRouter();
@@ -34,6 +39,16 @@ export default function EditShowPage() {
   const [uploadingImage, setUploadingImage] = useState("");
   const [venues, setVenues] = useState<Array<{ id: number; name: string }>>([]);
 
+  // Available options from database
+  const [availableCategories, setAvailableCategories] = useState<Array<{ id: number; term_id: number | null; name: string }>>([]);
+  const [availableTags, setAvailableTags] = useState<Array<{ id: number; term_id: number | null; name: string }>>([]);
+  const [availablePromotions, setAvailablePromotions] = useState<Array<{ id: number; promotion_id: number | null; name: string; code: string }>>([]);
+
+  // Keys to reset Select components after selection
+  const [categorySelectKey, setCategorySelectKey] = useState(0);
+  const [tagSelectKey, setTagSelectKey] = useState(0);
+  const [promotionSelectKey, setPromotionSelectKey] = useState(0);
+
   // Modal states
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
   const [tagModalOpen, setTagModalOpen] = useState(false);
@@ -42,12 +57,6 @@ export default function EditShowPage() {
   const [venueDetailModalOpen, setVenueDetailModalOpen] = useState(false);
   const [galleryImageModalOpen, setGalleryImageModalOpen] = useState(false);
   const [galleryVideoModalOpen, setGalleryVideoModalOpen] = useState(false);
-
-  // Toast state
-  const [toast, setToast] = useState<{
-    message: string;
-    type: "success" | "error";
-  } | null>(null);
 
   const [show, setShow] = useState({
     // Basic Info
@@ -94,8 +103,9 @@ export default function EditShowPage() {
     nliven_promo_code: "",
 
     // JSON fields
-    categories: [] as Array<{ term_id: number; name: string }>,
-    tags: [] as Array<{ term_id: number; name: string }>,
+    categories: [] as Array<{ id?: number; term_id: number; name: string }>,
+    tags: [] as Array<{ id?: number; term_id: number; name: string }>,
+    promotions: [] as Array<{ id?: number; promotion_id: number; name: string; code: string }>,
     show_features: null as {
       title?: string;
       length?: string;
@@ -158,13 +168,13 @@ export default function EditShowPage() {
     try {
       const { data, error } = await supabase
         .from("shows")
-        .select("*")
+        .select("id, venue_id, status, product_slug, product_id, series_id, title, series_code, data")
         .eq("id", id)
         .maybeSingle();
 
       if (error) {
         console.error("Error loading show:", error);
-        setToast({ message: "Failed to load show from database: " + error.message, type: "error" });
+        toast.error("Failed to load show from database: " + error.message);
         setLoading(false);
         return;
       }
@@ -175,7 +185,7 @@ export default function EditShowPage() {
       }
 
       // Extract data from JSONB field or fallback to root level (for backward compatibility)
-      const showData = (data.data as Record<string, unknown> | null) || data;
+      const showData = (data.data as Record<string, unknown> | null) || (data as unknown as Record<string, unknown>);
 
       // Use column values if available, otherwise fallback to JSONB data
       const titleValue = (data.title as string | undefined) || (showData.title as string | undefined) || (showData.name as string | undefined) || "";
@@ -225,12 +235,21 @@ export default function EditShowPage() {
         series_code: seriesCodeValue,
         nliven_token: (showData.nliven_token ?? "") as string,
         nliven_promo_code: (showData.nliven_promo_code ?? "") as string,
-        categories: Array.isArray(showData.categories) ? (showData.categories as Array<{ term_id: number; name: string }>) : [],
-        tags: Array.isArray(showData.tags) ? (showData.tags as Array<{ term_id: number; name: string }>) : [],
-        show_features: showFeatures,
-        story: storyData,
-        venue_details: venueData,
-        additional_info: showData.additional_info || null,
+        categories: Array.isArray(showData.categories)
+          ? (showData.categories as Array<{ term_id: number; name: string }>)
+          : [],
+        tags: Array.isArray(showData.tags)
+          ? (showData.tags as Array<{ term_id: number; name: string }>)
+          : [],
+        promotions: (additionalInfo.venue as { venue_series_data?: { promotions?: Array<{ id: number; name: string; code: string }> } } | null)?.venue_series_data?.promotions?.map(p => ({
+          promotion_id: p.id,
+          name: p.name,
+          code: p.code
+        })) || [],
+        show_features: showFeatures as Record<string, unknown> | null,
+        story: storyData as Record<string, unknown> | null,
+        venue_details: venueData as Record<string, unknown> | null,
+        additional_info: (showData.additional_info as Record<string, unknown>) || null,
         cast_members: Array.isArray(showData.cast_members)
           ? ((showData.cast_members as Array<{ title?: string; description?: string; img_url?: string }>).map(item => ({
             title: item.title || "",
@@ -283,11 +302,11 @@ export default function EditShowPage() {
         yoast_focuskeywords: (yoastData as { yoast_wpseo_focuskeywords?: string } | null)?.yoast_wpseo_focuskeywords ?? "",
         yoast_metadesc: (yoastData as { yoast_wpseo_metadesc?: string } | null)?.yoast_wpseo_metadesc ?? "",
         yoast_title: (yoastData as { yoast_wpseo_title?: string } | null)?.yoast_wpseo_title ?? "",
-        yoast_seo: yoastData,
+        yoast_seo: yoastData as Record<string, unknown> | null,
       });
     } catch (error) {
       console.error("Unexpected error:", error);
-      setToast({ message: "Failed to load show", type: "error" });
+      toast.error("Failed to load show");
     } finally {
       setLoading(false);
     }
@@ -299,22 +318,94 @@ export default function EditShowPage() {
       try {
         const { data, error } = await supabase
           .from("venues")
-          .select("id, name")
+          .select("id, title")
           .eq("status", "active")
-          .order("name", { ascending: true });
+          .order("title", { ascending: true });
 
         if (error) {
           console.error("Error loading venues:", error);
           return;
         }
 
-        setVenues((data || []).map(v => ({ id: v.id, name: v.name })));
+        setVenues((data || []).map(v => ({ id: v.id, name: v.title })));
       } catch (error) {
         console.error("Error loading venues:", error);
       }
     };
 
     void loadVenues();
+  }, []);
+
+  // Load categories for dropdown
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("categories")
+          .select("id, term_id, name, status")
+          .or("status.eq.active,status.is.null")
+          .order("name", { ascending: true });
+
+        if (error) {
+          console.error("Error loading categories:", error);
+          return;
+        }
+
+        setAvailableCategories(data || []);
+      } catch (error) {
+        console.error("Error loading categories:", error);
+      }
+    };
+
+    void loadCategories();
+  }, []);
+
+  // Load tags for dropdown
+  useEffect(() => {
+    const loadTags = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("tags")
+          .select("id, term_id, name, status")
+          .or("status.eq.active,status.is.null")
+          .order("name", { ascending: true });
+
+        if (error) {
+          console.error("Error loading tags:", error);
+          return;
+        }
+
+        setAvailableTags(data || []);
+      } catch (error) {
+        console.error("Error loading tags:", error);
+      }
+    };
+
+    void loadTags();
+  }, []);
+
+  // Load promotions for dropdown
+  useEffect(() => {
+    const loadPromotions = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("promotions")
+          .select("id, promotion_id, name, code, status")
+          .or("status.eq.active,status.is.null")
+          .order("name", { ascending: true });
+
+        if (error) {
+          console.error("Error loading promotions:", error);
+          return;
+        }
+
+        setAvailablePromotions(data || []);
+      } catch (error) {
+        console.error("Error loading promotions:", error);
+      }
+    };
+
+    void loadPromotions();
   }, []);
 
   useEffect(() => {
@@ -324,6 +415,7 @@ export default function EditShowPage() {
       // Pre-fill form with template data when creating a new show
       setShow({
         ...showTemplateData,
+        promotions: [],
         story: null,
         venue_details: null,
         additional_info: null,
@@ -337,12 +429,12 @@ export default function EditShowPage() {
   ) => {
     const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
-      setToast({ message: "Image size must be less than 10MB. Please choose a smaller image.", type: "error" });
+      toast.error("Image size must be less than 10MB. Please choose a smaller image.");
       return;
     }
 
     if (!file.type.startsWith("image/")) {
-      setToast({ message: "Please select a valid image file.", type: "error" });
+      toast.error("Please select a valid image file.");
       return;
     }
 
@@ -361,7 +453,7 @@ export default function EditShowPage() {
 
       if (uploadError) {
         console.error("Upload error:", uploadError);
-        setToast({ message: "Failed to upload image: " + uploadError.message, type: "error" });
+        toast.error("Failed to upload image: " + uploadError.message);
         return;
       }
 
@@ -377,7 +469,7 @@ export default function EditShowPage() {
       const message =
         error instanceof Error ? error.message : "Unknown error occurred";
       console.error("Unexpected error:", error);
-      setToast({ message: "Error uploading image: " + message, type: "error" });
+      toast.error("Error uploading image: " + message);
     } finally {
       setUploadingImage("");
     }
@@ -418,7 +510,28 @@ export default function EditShowPage() {
         },
       };
 
-      // Build venue object
+      // Build venue object with promotions in venue_series_data
+      const venueSeriesData = show.venue_series_data as {
+        id?: number;
+        name?: string;
+        venue?: unknown;
+        seriesCode?: string;
+        publicUrl?: string;
+        isGASales?: boolean;
+        priceLevels?: unknown[];
+        priceTypes?: unknown[];
+        promotions?: Array<{ id: number; name: string; code: string; requireEvenNumberOfTickets?: boolean }>;
+        seatAlerts?: unknown[];
+      } | null;
+
+      // Convert show.promotions to venue_series_data.promotions format
+      const mergedPromotions = show.promotions.map(p => ({
+        id: p.promotion_id,
+        name: p.name,
+        code: p.code,
+        requireEvenNumberOfTickets: false
+      }));
+
       const venueObj = {
         title: show.venue_title || "",
         sub_title: show.venue_sub_title || "",
@@ -427,7 +540,12 @@ export default function EditShowPage() {
         img_url: show.venue_img_url || "",
         venue_link: show.venue_link || "",
         length: String(show.venue_details_array.length),
-        venue_series_data: show.venue_series_data,
+        venue_series_data: venueSeriesData ? {
+          ...venueSeriesData,
+          promotions: mergedPromotions.length > 0 ? mergedPromotions : (venueSeriesData.promotions || [])
+        } : (mergedPromotions.length > 0 ? {
+          promotions: mergedPromotions
+        } : null),
         google_map: show.venue_google_map || "",
         seat_map: show.venue_seat_map || "",
         details: show.venue_details_array,
@@ -467,8 +585,8 @@ export default function EditShowPage() {
         cover_image: show.cover_image || null,
         portrait_image: show.portrait_image || null,
         series_code: show.series_code || null,
-        categories: show.categories.length > 0 ? show.categories : [],
-        tags: show.tags.length > 0 ? show.tags : [],
+        categories: show.categories.map(c => ({ term_id: c.term_id, name: c.name })),
+        tags: show.tags.map(t => ({ term_id: t.term_id, name: t.name })),
         review_count: show.review_count ? Number(show.review_count) : 0,
         additional_info: additionalInfo,
       };
@@ -544,10 +662,7 @@ export default function EditShowPage() {
       }
 
       if (duplicateFound) {
-        setToast({
-          message: `A show with the same ${duplicateFields.join(", ")} already exists (Show ID: ${duplicateFound.id}). Please use different values.`,
-          type: "error",
-        });
+        toast.error(`A show with the same ${duplicateFields.join(", ")} already exists (Show ID: ${duplicateFound.id}). Please use different values.`);
         setLoading(false);
         return;
       }
@@ -588,12 +703,9 @@ export default function EditShowPage() {
 
       if (error) {
         console.error("Error saving show:", error);
-        setToast({ message: "Error saving show: " + error.message, type: "error" });
+        toast.error("Error saving show: " + error.message);
       } else {
-        setToast({
-          message: isNew ? "Show created successfully!" : "Show updated successfully!",
-          type: "success",
-        });
+        toast.success(isNew ? "Show created successfully!" : "Show updated successfully!");
         setTimeout(() => {
           router.push("/dashboard/shows");
         }, 1500);
@@ -601,16 +713,25 @@ export default function EditShowPage() {
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : "Unknown error occurred";
-      setToast({ message: "Error saving show: " + message, type: "error" });
+      toast.error("Error saving show: " + message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddCategory = (name: string) => {
+  const handleAddCategory = (categoryId: string) => {
+    const category = availableCategories.find(c => c.id.toString() === categoryId);
+    if (!category) return;
+
+    // Check if already added
+    if (show.categories.some(c => c.term_id === category.term_id)) {
+      toast.error("Category already added");
+      return;
+    }
+
     setShow((prev) => ({
       ...prev,
-      categories: [...prev.categories, { term_id: Date.now(), name }],
+      categories: [...prev.categories, { id: category.id, term_id: category.term_id || Date.now(), name: category.name }],
     }));
   };
 
@@ -621,10 +742,19 @@ export default function EditShowPage() {
     }));
   };
 
-  const handleAddTag = (name: string) => {
+  const handleAddTag = (tagId: string) => {
+    const tag = availableTags.find(t => t.id.toString() === tagId);
+    if (!tag) return;
+
+    // Check if already added
+    if (show.tags.some(t => t.term_id === tag.term_id)) {
+      toast.error("Tag already added");
+      return;
+    }
+
     setShow((prev) => ({
       ...prev,
-      tags: [...prev.tags, { term_id: Date.now(), name }],
+      tags: [...prev.tags, { id: tag.id, term_id: tag.term_id || Date.now(), name: tag.name }],
     }));
   };
 
@@ -632,6 +762,34 @@ export default function EditShowPage() {
     setShow((prev) => ({
       ...prev,
       tags: prev.tags.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleAddPromotion = (promotionId: string) => {
+    const promotion = availablePromotions.find(p => p.id.toString() === promotionId);
+    if (!promotion) return;
+
+    // Check if already added
+    if (show.promotions.some(p => p.promotion_id === promotion.promotion_id)) {
+      toast.error("Promotion already added");
+      return;
+    }
+
+    setShow((prev) => ({
+      ...prev,
+      promotions: [...prev.promotions, {
+        id: promotion.id,
+        promotion_id: promotion.promotion_id || Date.now(),
+        name: promotion.name,
+        code: promotion.code
+      }],
+    }));
+  };
+
+  const removePromotion = (index: number) => {
+    setShow((prev) => ({
+      ...prev,
+      promotions: prev.promotions.filter((_, i) => i !== index),
     }));
   };
 
@@ -1118,21 +1276,31 @@ export default function EditShowPage() {
             <CardDescription>Add multiple categories and tags</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label>Categories</Label>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCategoryModalOpen(true)}
-                  disabled={loading}
-                >
-                  <Plus className="h-4 w-4 mr-1" />
-                  Add Category
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2">
+            <div className="space-y-2 w-full">
+              <Label>Categories</Label>
+              <Select
+                key={categorySelectKey}
+                onValueChange={(value: string) => {
+                  if (value) {
+                    handleAddCategory(value);
+                    // Reset select by changing key (force re-render)
+                    setCategorySelectKey((prev: number) => prev + 1);
+                  }
+                }}
+                disabled={loading}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a category..." />
+                </SelectTrigger>
+                <SelectContent className="w-[var(--radix-select-trigger-width)]">
+                  {availableCategories.map((category) => (
+                    <SelectItem key={category.id} value={category.id.toString()}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div className="flex flex-wrap gap-2 mt-2">
                 {show.categories.map((cat, index) => (
                   <div
                     key={index}
@@ -1151,21 +1319,31 @@ export default function EditShowPage() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label>Tags</Label>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setTagModalOpen(true)}
-                  disabled={loading}
-                >
-                  <Plus className="h-4 w-4 mr-1" />
-                  Add Tag
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2">
+            <div className="space-y-2 w-full">
+              <Label>Tags</Label>
+              <Select
+                key={tagSelectKey}
+                onValueChange={(value: string) => {
+                  if (value) {
+                    handleAddTag(value);
+                    // Reset select by changing key (force re-render)
+                    setTagSelectKey((prev: number) => prev + 1);
+                  }
+                }}
+                disabled={loading}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a tag..." />
+                </SelectTrigger>
+                <SelectContent className="w-[var(--radix-select-trigger-width)]">
+                  {availableTags.map((tag) => (
+                    <SelectItem key={tag.id} value={tag.id.toString()}>
+                      {tag.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div className="flex flex-wrap gap-2 mt-2">
                 {show.tags.map((tag, index) => (
                   <div
                     key={index}
@@ -1175,6 +1353,49 @@ export default function EditShowPage() {
                     <button
                       type="button"
                       onClick={() => removeTag(index)}
+                      className="text-destructive hover:text-destructive/80"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2 w-full">
+              <Label>Promotions</Label>
+              <Select
+                key={promotionSelectKey}
+                onValueChange={(value: string) => {
+                  if (value) {
+                    handleAddPromotion(value);
+                    // Reset select by changing key (force re-render)
+                    setPromotionSelectKey((prev: number) => prev + 1);
+                  }
+                }}
+                disabled={loading}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a promotion..." />
+                </SelectTrigger>
+                <SelectContent className="w-[var(--radix-select-trigger-width)]">
+                  {availablePromotions.map((promotion) => (
+                    <SelectItem key={promotion.id} value={promotion.id.toString()}>
+                      {promotion.name} ({promotion.code})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {show.promotions.map((promo, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-2 bg-muted px-3 py-1 rounded-md text-sm"
+                  >
+                    <span>{promo.name} ({promo.code})</span>
+                    <button
+                      type="button"
+                      onClick={() => removePromotion(index)}
                       className="text-destructive hover:text-destructive/80"
                     >
                       <X className="h-3 w-3" />
@@ -1776,16 +1997,6 @@ export default function EditShowPage() {
       </form>
 
       {/* Modals */}
-      <CategoryModal
-        isOpen={categoryModalOpen}
-        onClose={() => setCategoryModalOpen(false)}
-        onSave={handleAddCategory}
-      />
-      <TagModal
-        isOpen={tagModalOpen}
-        onClose={() => setTagModalOpen(false)}
-        onSave={handleAddTag}
-      />
       <ShowFeatureModal
         isOpen={showFeatureModalOpen}
         onClose={() => setShowFeatureModalOpen(false)}
@@ -1814,14 +2025,6 @@ export default function EditShowPage() {
         type="video"
       />
 
-      {/* Toast */}
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
     </div>
   );
 }

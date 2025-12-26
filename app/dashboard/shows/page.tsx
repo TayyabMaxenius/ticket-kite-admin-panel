@@ -27,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabase/client";
+import { toast } from "@/lib/toast";
 
 interface Show {
   id: number;
@@ -60,7 +61,7 @@ export default function ShowsPage() {
 
       if (error) {
         console.error("Error loading shows:", error);
-        alert("Failed to load shows: " + error.message);
+        toast.error("Failed to load shows: " + error.message);
         return;
       }
 
@@ -101,7 +102,7 @@ export default function ShowsPage() {
       setShows(transformedShows);
     } catch (error) {
       console.error("Unexpected error:", error);
-      alert("Failed to load shows");
+      toast.error("Failed to load shows");
     } finally {
       setLoading(false);
     }
