@@ -42,7 +42,7 @@ export default function EditPromotionPage() {
 
       if (error) {
         console.error("Error loading promotion:", error);
-        setToast({ message: "Failed to load promotion from database: " + error.message, type: "error" });
+        toast.error("Failed to load promotion from database: " + error.message);
         setLoading(false);
         return;
       }
@@ -61,7 +61,7 @@ export default function EditPromotionPage() {
       });
     } catch (error) {
       console.error("Unexpected error:", error);
-      setToast({ message: "Failed to load promotion", type: "error" });
+      toast.error("Failed to load promotion");
     } finally {
       setLoading(false);
     }

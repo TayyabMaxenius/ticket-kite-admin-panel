@@ -45,7 +45,7 @@ export default function EditVenuePage() {
 
       if (error) {
         console.error("Error loading venue:", error);
-        setToast({ message: "Failed to load venue from database: " + error.message, type: "error" });
+        toast.error("Failed to load venue from database: " + error.message);
         setLoading(false);
         return;
       }
@@ -65,7 +65,7 @@ export default function EditVenuePage() {
       });
     } catch (error) {
       console.error("Unexpected error:", error);
-      setToast({ message: "Failed to load venue", type: "error" });
+      toast.error("Failed to load venue");
     } finally {
       setLoading(false);
     }
