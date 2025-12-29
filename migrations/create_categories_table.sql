@@ -3,8 +3,8 @@
 -- ============================================
 
 CREATE TABLE IF NOT EXISTS categories (
-  id serial PRIMARY KEY,
-  term_id integer UNIQUE,
+  id smallserial PRIMARY KEY,
+  term_id smallint UNIQUE,
   name text NOT NULL,
   status text DEFAULT 'active',
   created_at timestamptz DEFAULT now(),

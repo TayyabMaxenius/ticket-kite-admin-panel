@@ -1,11 +1,13 @@
 -- ============================================
--- CREATE TAGS TABLE
+-- CREATE PRICE LEVELS TABLE
 -- ============================================
 
-CREATE TABLE IF NOT EXISTS tags (
+CREATE TABLE IF NOT EXISTS price_levels (
   id smallserial PRIMARY KEY,
-  term_id smallint UNIQUE,
+  price_level_id integer UNIQUE,
   name text NOT NULL,
+  label text,
+  description text,
   status text DEFAULT 'active',
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
@@ -15,20 +17,20 @@ CREATE TABLE IF NOT EXISTS tags (
 -- CREATE INDEXES
 -- ============================================
 
--- Index for term_id (for lookups)
-CREATE INDEX IF NOT EXISTS idx_tags_term_id ON tags(term_id);
+-- Index for price_level_id (for lookups)
+CREATE INDEX IF NOT EXISTS idx_price_levels_price_level_id ON price_levels(price_level_id);
 
 -- Index for name (for searching)
-CREATE INDEX IF NOT EXISTS idx_tags_name ON tags(name);
+CREATE INDEX IF NOT EXISTS idx_price_levels_name ON price_levels(name);
 
 -- Index for status (for filtering active/inactive)
-CREATE INDEX IF NOT EXISTS idx_tags_status ON tags(status);
+CREATE INDEX IF NOT EXISTS idx_price_levels_status ON price_levels(status);
 
 -- ============================================
 -- CREATE TRIGGER FOR UPDATED_AT
 -- ============================================
 
-CREATE OR REPLACE FUNCTION update_tags_updated_at()
+CREATE OR REPLACE FUNCTION update_price_levels_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
   NEW.updated_at = now();
@@ -36,8 +38,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_update_tags_updated_at
-  BEFORE UPDATE ON tags
+CREATE TRIGGER trigger_update_price_levels_updated_at
+  BEFORE UPDATE ON price_levels
   FOR EACH ROW
-  EXECUTE FUNCTION update_tags_updated_at();
+  EXECUTE FUNCTION update_price_levels_updated_at();
 

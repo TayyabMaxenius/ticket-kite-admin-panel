@@ -3,8 +3,8 @@
 -- ============================================
 
 CREATE TABLE IF NOT EXISTS promotions (
-  id serial PRIMARY KEY,
-  promotion_id integer UNIQUE,
+  id smallserial PRIMARY KEY,
+  promotion_id smallint UNIQUE,
   name text NOT NULL,
   code text NOT NULL,
   require_even_number_of_tickets boolean DEFAULT false,
