@@ -166,9 +166,9 @@ export function Sidebar() {
 	}, []);
 
 	return (
-		<div className="flex h-screen w-64 flex-col border-r bg-sidebar">
+		<div className="flex h-screen w-64 flex-col border-r bg-sidebar overflow-hidden">
 			{/* Logo */}
-			<div className="flex h-16 items-center border-b px-6">
+			<div className="flex h-16 items-center border-b px-6 flex-shrink-0">
 				<div className="flex items-center gap-2">
 					<div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
 						<Ticket className="h-5 w-5" />
@@ -181,7 +181,7 @@ export function Sidebar() {
 			</div>
 
 			{/* Navigation */}
-			<nav className="flex-1 space-y-1 p-4">
+			<nav className="flex-1 space-y-1 p-4 overflow-y-auto min-h-0 scrollbar-hide">
 				{menuItems
 					.filter((item) => {
 						const role: Role = (user?.role as Role) ?? "user";
@@ -210,7 +210,7 @@ export function Sidebar() {
 			</nav>
 
 			{/* User Profile */}
-			<div className="border-t p-4">
+			<div className="border-t p-4 flex-shrink-0">
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button
