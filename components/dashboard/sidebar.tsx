@@ -19,6 +19,7 @@ import {
 	TicketPercent,
 	DollarSign,
 	MapPin,
+	Code,
 	Camera,
 	Hotel,
 	Music,
@@ -92,6 +93,18 @@ const menuItems: MenuItem[] = [
 		title: "Price Levels",
 		href: "/dashboard/price-levels",
 		icon: DollarSign,
+		roles: ["admin"],
+	},
+	{
+		title: "Show Features",
+		href: "/dashboard/show-features",
+		icon: Sparkles,
+		roles: ["admin"],
+	},
+	{
+		title: "Series Codes",
+		href: "/dashboard/series-codes",
+		icon: Code,
 		roles: ["admin"],
 	},
 	{

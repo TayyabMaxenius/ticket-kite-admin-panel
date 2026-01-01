@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Save, Loader2, Plus, X, ImageIcon, Check } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase/client";
-import { ShowFeatureModal } from "./_components/ShowFeatureModal";
 import { CastMemberModal } from "./_components/CastMemberModal";
 import { VenueDetailModal } from "./_components/VenueDetailModal";
 import { GalleryMediaModal } from "./_components/GalleryMediaModal";
@@ -48,17 +47,21 @@ export default function EditShowPage() {
 	const [availablePriceLevels, setAvailablePriceLevels] = useState<
 		Array<{ id: number; price_level_id: number | null; name: string; label: string | null }>
 	>([]);
+	const [availableShowFeatures, setAvailableShowFeatures] = useState<
+		Array<{ id: number; title: string; description: string | null; img_url: string | null }>
+	>([]);
+	const [availableSeriesCodes, setAvailableSeriesCodes] = useState<
+		Array<{ id: number; name: string }>
+	>([]);
 
 	// Keys to reset Select components after selection
 	const [categorySelectKey, setCategorySelectKey] = useState(0);
 	const [tagSelectKey, setTagSelectKey] = useState(0);
 	const [promotionSelectKey, setPromotionSelectKey] = useState(0);
 	const [priceLevelSelectKey, setPriceLevelSelectKey] = useState(0);
+	const [showFeatureSelectKey, setShowFeatureSelectKey] = useState(0);
 
 	// Modal states
-	const [categoryModalOpen, setCategoryModalOpen] = useState(false);
-	const [tagModalOpen, setTagModalOpen] = useState(false);
-	const [showFeatureModalOpen, setShowFeatureModalOpen] = useState(false);
 	const [castMemberModalOpen, setCastMemberModalOpen] = useState(false);
 	const [venueDetailModalOpen, setVenueDetailModalOpen] = useState(false);
 	const [galleryImageModalOpen, setGalleryImageModalOpen] = useState(false);
@@ -162,6 +165,7 @@ export default function EditShowPage() {
 		// Show Features details
 		show_features_title: "",
 		show_features_details: [] as Array<{
+			id: number;
 			title: string;
 			description: string;
 			img_url: string;
@@ -283,7 +287,7 @@ export default function EditShowPage() {
 				name: titleValue,
 				description: (showData.description ?? "") as string,
 				short_description: (showData.short_description ?? "") as string,
-				product_url: (showData.product_url ?? "") as string,
+				product_url: productSlugValue ? `/shows/${productSlugValue}` : "",
 				product_slug: productSlugValue,
 				product_id: productIdValue ? String(productIdValue) : "",
 				currency_symbol: (showData.currency_symbol as string | undefined) ?? "",
@@ -422,6 +426,7 @@ export default function EditShowPage() {
 								details: Array<{ title?: string; description?: string; img_url?: string }>;
 							}
 						).details.map((item) => ({
+							id: 0, // Legacy data doesn't have id, set to 0
 							title: item.title || "",
 							description: item.description || "",
 							img_url: item.img_url || "",
@@ -567,6 +572,54 @@ export default function EditShowPage() {
 		void loadPriceLevels();
 	}, []);
 
+	// Load show features for dropdown
+	useEffect(() => {
+		const loadShowFeatures = async () => {
+			try {
+				const { data, error } = await supabase
+					.from("show_features")
+					.select("id, title, description, img_url, status")
+					.or("status.eq.active,status.is.null")
+					.order("title", { ascending: true });
+
+				if (error) {
+					console.error("Error loading show features:", error);
+					return;
+				}
+
+				setAvailableShowFeatures(data || []);
+			} catch (error) {
+				console.error("Error loading show features:", error);
+			}
+		};
+
+		void loadShowFeatures();
+	}, []);
+
+	// Load series codes for dropdown
+	useEffect(() => {
+		const loadSeriesCodes = async () => {
+			try {
+				const { data, error } = await supabase
+					.from("series_codes")
+					.select("id, name, status")
+					.or("status.eq.active,status.is.null")
+					.order("name", { ascending: true });
+
+				if (error) {
+					console.error("Error loading series codes:", error);
+					return;
+				}
+
+				setAvailableSeriesCodes(data || []);
+			} catch (error) {
+				console.error("Error loading series codes:", error);
+			}
+		};
+
+		void loadSeriesCodes();
+	}, []);
+
 	useEffect(() => {
 		if (!isNew) {
 			void loadShow();
@@ -592,7 +645,11 @@ export default function EditShowPage() {
 			const showFeaturesObj = {
 				title: show.show_features_title || "",
 				length: String(show.show_features_details.length),
-				details: show.show_features_details,
+				details: show.show_features_details.map((f) => ({
+					title: f.title,
+					description: f.description,
+					img_url: f.img_url,
+				})),
 				tags: {
 					length: "",
 					details: [],
@@ -702,7 +759,7 @@ export default function EditShowPage() {
 				nliven_promo_code: show.nliven_promo_code || null,
 				title: show.name || null,
 				percentage_fee: show.percentage_fee || null,
-				product_url: show.product_url || null,
+				product_url: show.product_slug ? `/shows/${show.product_slug}` : null,
 				product_slug: show.product_slug || null,
 				description: show.description || null,
 				short_description: show.short_description || null,
@@ -986,15 +1043,29 @@ export default function EditShowPage() {
 		}));
 	};
 
-	const handleAddShowFeature = (feature: {
-		title: string;
-		description: string;
-		img_url: string;
-	}) => {
+	const handleAddShowFeature = (featureId: string) => {
+		const feature = availableShowFeatures.find((f) => f.id.toString() === featureId);
+		if (!feature) return;
+
+		// Check if already added
+		if (show.show_features_details.some((f) => f.id === feature.id)) {
+			toast.error("Show feature already added");
+			return;
+		}
+
 		setShow((prev) => ({
 			...prev,
-			show_features_details: [...prev.show_features_details, feature],
+			show_features_details: [
+				...prev.show_features_details,
+				{
+					id: feature.id,
+					title: feature.title,
+					description: feature.description || "",
+					img_url: feature.img_url || "",
+				},
+			],
 		}));
+		setShowFeatureSelectKey((prev) => prev + 1);
 	};
 
 	const removeShowFeature = (index: number) => {
@@ -1116,24 +1187,34 @@ export default function EditShowPage() {
 
 						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label htmlFor="product_url">Product URL</Label>
-								<Input
-									id="product_url"
-									value={show.product_url}
-									onChange={(e) => setShow({ ...show, product_url: e.target.value })}
-									placeholder="shows/sir-elton/"
-									disabled={loading}
-								/>
-							</div>
-							<div className="space-y-2">
 								<Label htmlFor="product_slug">Product Slug</Label>
 								<Input
 									id="product_slug"
 									value={show.product_slug}
-									onChange={(e) => setShow({ ...show, product_slug: e.target.value })}
+									onChange={(e) => {
+										const slug = e.target.value;
+										setShow({
+											...show,
+											product_slug: slug,
+											product_url: slug ? `/shows/${slug}` : "",
+										});
+									}}
 									placeholder="sir-elton"
 									disabled={loading}
 								/>
+							</div>
+							<div className="space-y-2">
+								<Label htmlFor="product_url">Product URL</Label>
+								<Input
+									id="product_url"
+									value={show.product_slug ? `/shows/${show.product_slug}` : ""}
+									placeholder="/shows/sir-elton"
+									disabled={true}
+									className="bg-muted cursor-not-allowed"
+								/>
+								<p className="text-xs text-muted-foreground">
+									Automatically generated from Product Slug
+								</p>
 							</div>
 						</div>
 
@@ -1489,9 +1570,9 @@ export default function EditShowPage() {
 												disabled={isSelected}
 												className={isSelected ? "opacity-60" : ""}
 											>
-												<div className="flex items-center justify-between w-full">
-													<span>{category.name}</span>
+												<div className="flex items-center gap-2 w-full">
 													{isSelected && <Check className="h-4 w-4 shrink-0" />}
+													<span>{category.name}</span>
 												</div>
 											</SelectItem>
 										);
@@ -1533,7 +1614,7 @@ export default function EditShowPage() {
 								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Select a tag..." />
 								</SelectTrigger>
-								<SelectContent className="w-[var(--radix-select-trigger-width)]">
+								<SelectContent className="w-(--radix-select-trigger-width)">
 									{availableTags.map((tag) => {
 										const isSelected = show.tags.some((t) => t.term_id === tag.term_id);
 										return (
@@ -1541,11 +1622,11 @@ export default function EditShowPage() {
 												key={tag.id}
 												value={tag.id.toString()}
 												disabled={isSelected}
-												className={isSelected ? "opacity-60 pr-8" : ""}
+												className={isSelected ? "opacity-60" : ""}
 											>
-												<div className="flex items-center justify-between w-full">
-													<span>{tag.name}</span>
+												<div className="flex items-center gap-2 w-full">
 													{isSelected && <Check className="h-4 w-4 shrink-0" />}
+													<span>{tag.name}</span>
 												</div>
 											</SelectItem>
 										);
@@ -1587,7 +1668,7 @@ export default function EditShowPage() {
 								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Select a promotion..." />
 								</SelectTrigger>
-								<SelectContent className="w-[var(--radix-select-trigger-width)]">
+								<SelectContent className="w-(--radix-select-trigger-width)">
 									{availablePromotions.map((promotion) => {
 										const isSelected = show.promotions.some(
 											(p) => p.promotion_id === promotion.promotion_id
@@ -1597,13 +1678,13 @@ export default function EditShowPage() {
 												key={promotion.id}
 												value={promotion.id.toString()}
 												disabled={isSelected}
-												className={isSelected ? "opacity-60 pr-8" : ""}
+												className={isSelected ? "opacity-60" : ""}
 											>
-												<div className="flex items-center justify-between w-full">
+												<div className="flex items-center gap-2 w-full">
+													{isSelected && <Check className="h-4 w-4 shrink-0" />}
 													<span>
 														{promotion.name} ({promotion.code})
 													</span>
-													{isSelected && <Check className="h-4 w-4 shrink-0" />}
 												</div>
 											</SelectItem>
 										);
@@ -1657,13 +1738,13 @@ export default function EditShowPage() {
 												key={priceLevel.id}
 												value={priceLevel.id.toString()}
 												disabled={isSelected}
-												className={isSelected ? "opacity-60 pr-8" : ""}
+												className={isSelected ? "opacity-60" : ""}
 											>
-												<div className="flex items-center justify-between w-full">
+												<div className="flex items-center gap-2 w-full">
+													{isSelected && <Check className="h-4 w-4 shrink-0" />}
 													<span>
 														{priceLevel.name} {priceLevel.label && `(${priceLevel.label})`}
 													</span>
-													{isSelected && <Check className="h-4 w-4 shrink-0" />}
 												</div>
 											</SelectItem>
 										);
@@ -1713,13 +1794,24 @@ export default function EditShowPage() {
 							</div>
 							<div className="space-y-2">
 								<Label htmlFor="series_code">Series Code</Label>
-								<Input
-									id="series_code"
+								<Select
 									value={show.series_code}
-									onChange={(e) => setShow({ ...show, series_code: e.target.value })}
-									placeholder="SirEltonAP"
+									onValueChange={(value: string) => {
+										setShow({ ...show, series_code: value });
+									}}
 									disabled={loading}
-								/>
+								>
+									<SelectTrigger id="series_code" className="w-full">
+										<SelectValue placeholder="Select series code..." />
+									</SelectTrigger>
+									<SelectContent>
+										{availableSeriesCodes.map((seriesCode) => (
+											<SelectItem key={seriesCode.id} value={seriesCode.name}>
+												{seriesCode.name}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
 							</div>
 							<div className="space-y-2">
 								<Label htmlFor="nliven_token">NLiven Token</Label>
@@ -1733,13 +1825,25 @@ export default function EditShowPage() {
 							</div>
 							<div className="space-y-2">
 								<Label htmlFor="nliven_promo_code">NLiven Promo Code</Label>
-								<Input
-									id="nliven_promo_code"
-									value={show.nliven_promo_code}
-									onChange={(e) => setShow({ ...show, nliven_promo_code: e.target.value })}
-									placeholder="TICKETKITEVEGAS"
+								<Select
+									value={show.nliven_promo_code || "__none__"}
+									onValueChange={(value: string) => {
+										setShow({ ...show, nliven_promo_code: value === "__none__" ? "" : value });
+									}}
 									disabled={loading}
-								/>
+								>
+									<SelectTrigger id="nliven_promo_code" className="w-full">
+										<SelectValue placeholder="Select promo code..." />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="__none__">None</SelectItem>
+										{availablePromotions.map((promotion) => (
+											<SelectItem key={promotion.id} value={promotion.code}>
+												{promotion.name} ({promotion.code})
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
 							</div>
 						</div>
 					</CardContent>
@@ -1760,34 +1864,61 @@ export default function EditShowPage() {
 								id="show_features_title"
 								value={show.show_features_title}
 								onChange={(e) => setShow({ ...show, show_features_title: e.target.value })}
-								placeholder=""
+								placeholder="What to expect when attending this show"
 								disabled={loading}
 							/>
 						</div>
 						<div className="space-y-2">
-							<div className="flex items-center justify-between">
-								<Label>Feature Details</Label>
-								<Button
-									type="button"
-									variant="outline"
-									size="sm"
-									onClick={() => setShowFeatureModalOpen(true)}
-									disabled={loading}
-								>
-									<Plus className="h-4 w-4 mr-1" />
-									Add Feature
-								</Button>
-							</div>
-							<div className="space-y-2">
+							<Label>Feature Details</Label>
+							<Select
+								key={showFeatureSelectKey}
+								onValueChange={(value: string) => {
+									if (value) {
+										handleAddShowFeature(value);
+									}
+								}}
+								disabled={loading}
+							>
+								<SelectTrigger className="w-full">
+									<SelectValue placeholder="Select a feature..." />
+								</SelectTrigger>
+								<SelectContent className="w-(--radix-select-trigger-width)">
+									{availableShowFeatures.map((feature) => {
+										const isSelected = show.show_features_details.some((f) => f.id === feature.id);
+										return (
+											<SelectItem
+												key={feature.id}
+												value={feature.id.toString()}
+												disabled={isSelected}
+												className={isSelected ? "opacity-60" : ""}
+											>
+												<div className="flex items-center gap-2 w-full">
+													{isSelected && <Check className="h-4 w-4 shrink-0" />}
+													<span>{feature.title}</span>
+												</div>
+											</SelectItem>
+										);
+									})}
+								</SelectContent>
+							</Select>
+							<div className="space-y-2 mt-2">
 								{show.show_features_details.map((feature, index) => (
 									<div key={index} className="flex items-start gap-2 p-3 border rounded-md">
+										{feature.img_url && (
+											<div className="relative h-12 w-16 overflow-hidden rounded-md border bg-muted flex-shrink-0">
+												<Image
+													src={feature.img_url}
+													alt={feature.title}
+													fill
+													className="object-cover"
+													unoptimized
+												/>
+											</div>
+										)}
 										<div className="flex-1 space-y-1">
 											<div className="font-medium">{feature.title}</div>
-											<div className="text-sm text-muted-foreground">{feature.description}</div>
-											{feature.img_url && (
-												<div className="text-xs text-muted-foreground">
-													Image: {feature.img_url}
-												</div>
+											{feature.description && (
+												<div className="text-sm text-muted-foreground">{feature.description}</div>
 											)}
 										</div>
 										<button
@@ -1849,16 +1980,21 @@ export default function EditShowPage() {
 						</div>
 						<div className="space-y-2">
 							<Label htmlFor="story_enable_description">Enable Description</Label>
-							<select
-								id="story_enable_description"
+							<Select
 								value={show.story_enable_description}
-								onChange={(e) => setShow({ ...show, story_enable_description: e.target.value })}
+								onValueChange={(value: string) => {
+									setShow({ ...show, story_enable_description: value });
+								}}
 								disabled={loading}
-								className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
 							>
-								<option value="yes">Yes</option>
-								<option value="no">No</option>
-							</select>
+								<SelectTrigger id="story_enable_description" className="w-full">
+									<SelectValue placeholder="Select..." />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="yes">Yes</SelectItem>
+									<SelectItem value="no">No</SelectItem>
+								</SelectContent>
+							</Select>
 						</div>
 					</CardContent>
 				</Card>
@@ -2066,16 +2202,21 @@ export default function EditShowPage() {
 						</div>
 						<div className="space-y-2">
 							<Label htmlFor="venue_enable_venue">Enable Venue</Label>
-							<select
-								id="venue_enable_venue"
+							<Select
 								value={show.venue_enable_venue}
-								onChange={(e) => setShow({ ...show, venue_enable_venue: e.target.value })}
+								onValueChange={(value: string) => {
+									setShow({ ...show, venue_enable_venue: value });
+								}}
 								disabled={loading}
-								className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
 							>
-								<option value="yes">Yes</option>
-								<option value="no">No</option>
-							</select>
+								<SelectTrigger id="venue_enable_venue" className="w-full">
+									<SelectValue placeholder="Select..." />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="yes">Yes</SelectItem>
+									<SelectItem value="no">No</SelectItem>
+								</SelectContent>
+							</Select>
 						</div>
 						<div className="space-y-2">
 							<div className="flex items-center justify-between">
@@ -2207,11 +2348,6 @@ export default function EditShowPage() {
 			</form>
 
 			{/* Modals */}
-			<ShowFeatureModal
-				isOpen={showFeatureModalOpen}
-				onClose={() => setShowFeatureModalOpen(false)}
-				onSave={handleAddShowFeature}
-			/>
 			<CastMemberModal
 				isOpen={castMemberModalOpen}
 				onClose={() => setCastMemberModalOpen(false)}

@@ -220,7 +220,7 @@ export default function OtherShowsPage() {
 										unoptimized
 									/>
 								) : (
-									<div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
+									<div className="flex h-full w-full items-center justify-center bg-linear-to-br from-primary/20 to-primary/5">
 										<span className="text-sm text-muted-foreground">No Image</span>
 									</div>
 								)}
