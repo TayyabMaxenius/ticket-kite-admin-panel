@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { Upload, Loader2, CheckCircle2, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,9 +12,11 @@ interface MediaSelectModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	onSelect: (mediaUrl: string) => void;
+	onSelectMultiple?: (mediaUrls: string[]) => void; // For multiple selection mode
 	currentMediaUrl?: string;
 	mediaType: "image" | "video" | "all"; // 'image', 'video', or 'all' to show both
 	uploadPrefix?: string; // Prefix for uploads (default: 'shows/')
+	multiple?: boolean; // Enable multiple selection mode
 }
 
 interface S3Media {
@@ -30,9 +32,11 @@ export function MediaSelectModal({
 	isOpen,
 	onClose,
 	onSelect,
+	onSelectMultiple,
 	currentMediaUrl,
 	mediaType = "image",
 	uploadPrefix = "shows/",
+	multiple = false,
 }: MediaSelectModalProps) {
 	const [media, setMedia] = useState<S3Media[]>([]);
 	const [loading, setLoading] = useState(false);
@@ -43,16 +47,10 @@ export function MediaSelectModal({
 		current?: string;
 	} | null>(null);
 	const [selectedMedia, setSelectedMedia] = useState<string | null>(currentMediaUrl || null);
+	const [selectedMediaMultiple, setSelectedMediaMultiple] = useState<Set<string>>(new Set());
 	const [uploadFiles, setUploadFiles] = useState<File[]>([]);
 
-	useEffect(() => {
-		if (isOpen) {
-			loadMedia();
-			setSelectedMedia(currentMediaUrl || null);
-		}
-	}, [isOpen, currentMediaUrl, mediaType]);
-
-	const loadMedia = async () => {
+	const loadMedia = useCallback(async () => {
 		setLoading(true);
 		try {
 			// Fetch all media from S3 (no prefix filter)
@@ -72,7 +70,15 @@ export function MediaSelectModal({
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [mediaType]);
+
+	useEffect(() => {
+		if (isOpen) {
+			loadMedia();
+			setSelectedMedia(currentMediaUrl || null);
+			setSelectedMediaMultiple(new Set());
+		}
+	}, [isOpen, currentMediaUrl, loadMedia]);
 
 	const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const files = Array.from(event.target.files || []);
@@ -163,9 +169,17 @@ export function MediaSelectModal({
 			// Reload media list to show newly uploaded media
 			await loadMedia();
 
-			// Select the last uploaded media (or first if only one)
+			// Select uploaded media
 			if (uploadedUrls.length > 0) {
-				setSelectedMedia(uploadedUrls[uploadedUrls.length - 1]);
+				if (multiple) {
+					setSelectedMediaMultiple((prev) => {
+						const newSet = new Set(prev);
+						uploadedUrls.forEach((url) => newSet.add(url));
+						return newSet;
+					});
+				} else {
+					setSelectedMedia(uploadedUrls[uploadedUrls.length - 1]);
+				}
 				toast.success(`Successfully uploaded ${uploadedUrls.length} file(s)`);
 			}
 
@@ -189,22 +203,50 @@ export function MediaSelectModal({
 	};
 
 	const handleSelect = () => {
-		if (selectedMedia) {
-			onSelect(selectedMedia);
-			onClose();
+		if (multiple) {
+			if (selectedMediaMultiple.size > 0 && onSelectMultiple) {
+				onSelectMultiple(Array.from(selectedMediaMultiple));
+				onClose();
+			}
+		} else {
+			if (selectedMedia) {
+				onSelect(selectedMedia);
+				onClose();
+			}
+		}
+	};
+
+	const toggleMediaSelection = (url: string) => {
+		if (multiple) {
+			setSelectedMediaMultiple((prev) => {
+				const newSet = new Set(prev);
+				if (newSet.has(url)) {
+					newSet.delete(url);
+				} else {
+					newSet.add(url);
+				}
+				return newSet;
+			});
+		} else {
+			setSelectedMedia(url);
 		}
 	};
 
 	const filteredMedia =
 		mediaType === "all" ? media : media.filter((item) => item.type === mediaType);
 
+	const hasSelection = multiple ? selectedMediaMultiple.size > 0 : selectedMedia !== null;
+	const selectionCount = multiple ? selectedMediaMultiple.size : 0;
+
 	const footer = (
 		<>
 			<Button variant="outline" onClick={onClose} disabled={uploading}>
 				Cancel
 			</Button>
-			<Button onClick={handleSelect} disabled={!selectedMedia || uploading}>
-				Select {mediaType === "all" ? "Media" : mediaType === "image" ? "Image" : "Video"}
+			<Button onClick={handleSelect} disabled={!hasSelection || uploading}>
+				{multiple
+					? `Select ${selectionCount} ${selectionCount === 1 ? "Item" : "Items"}`
+					: `Select ${mediaType === "all" ? "Media" : mediaType === "image" ? "Image" : "Video"}`}
 			</Button>
 		</>
 	);
@@ -302,42 +344,60 @@ export function MediaSelectModal({
 							found. Upload a file to get started.
 						</div>
 					) : (
-						<div className="grid grid-cols-3 gap-3 max-h-96 overflow-y-auto">
-							{filteredMedia.map((item) => (
-								<div
-									key={item.key}
-									onClick={() => setSelectedMedia(item.url)}
-									className={`relative aspect-square cursor-pointer rounded-md border-2 overflow-hidden transition-all ${
-										selectedMedia === item.url
-											? "border-primary ring-2 ring-primary"
-											: "border-border hover:border-primary/50"
-									}`}
-								>
-									{item.type === "image" ? (
-										<Image
-											src={item.url}
-											alt={item.name}
-											fill
-											className="object-cover"
-											unoptimized
-										/>
-									) : (
-										<div className="w-full h-full bg-muted flex items-center justify-center">
-											<Play className="h-12 w-12 text-muted-foreground" />
-										</div>
-									)}
-									{selectedMedia === item.url && (
-										<div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
-											<CheckCircle2 className="h-8 w-8 text-primary" />
-										</div>
-									)}
-									{item.type === "video" && (
-										<div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs p-1 truncate">
-											{item.name}
-										</div>
-									)}
+						<div className="space-y-2">
+							{multiple && selectedMediaMultiple.size > 0 && (
+								<div className="text-sm text-muted-foreground">
+									{selectedMediaMultiple.size} item{selectedMediaMultiple.size !== 1 ? "s" : ""}{" "}
+									selected
 								</div>
-							))}
+							)}
+							<div className="grid grid-cols-3 gap-3 max-h-96 overflow-y-auto">
+								{filteredMedia.map((item) => {
+									const isSelected = multiple
+										? selectedMediaMultiple.has(item.url)
+										: selectedMedia === item.url;
+									return (
+										<div
+											key={item.key}
+											onClick={() => toggleMediaSelection(item.url)}
+											className={`relative aspect-square cursor-pointer rounded-md border-2 overflow-hidden transition-all ${
+												isSelected
+													? "border-primary ring-2 ring-primary"
+													: "border-border hover:border-primary/50"
+											}`}
+										>
+											{item.type === "image" ? (
+												<Image
+													src={item.url}
+													alt={item.name}
+													fill
+													className="object-cover"
+													unoptimized
+												/>
+											) : (
+												<div className="w-full h-full bg-muted flex items-center justify-center">
+													<Play className="h-12 w-12 text-muted-foreground" />
+												</div>
+											)}
+											{isSelected && (
+												<div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+													<CheckCircle2 className="h-8 w-8 text-primary" />
+												</div>
+											)}
+											{item.type === "video" && (
+												<div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs p-1 truncate">
+													{item.name}
+												</div>
+											)}
+											{multiple && (
+												<div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+													{isSelected ? "✓" : ""}
+												</div>
+											)}
+										</div>
+									);
+								})}
+							</div>
 						</div>
 					)}
 				</div>

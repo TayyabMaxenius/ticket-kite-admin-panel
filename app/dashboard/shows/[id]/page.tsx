@@ -76,7 +76,6 @@ export default function EditShowPage() {
 		product_slug: "",
 		product_id: "",
 		currency_symbol: "",
-		review_count: "",
 
 		// Pricing
 		price: "",
@@ -291,7 +290,6 @@ export default function EditShowPage() {
 				product_slug: productSlugValue,
 				product_id: productIdValue ? String(productIdValue) : "",
 				currency_symbol: (showData.currency_symbol as string | undefined) ?? "",
-				review_count: (showData.review_count as number | string | undefined)?.toString() ?? "",
 				price: (showData.regular_price as string | number | undefined)
 					? String(showData.regular_price)
 					: (showData.price as number | undefined)
@@ -772,7 +770,7 @@ export default function EditShowPage() {
 				series_code: show.series_code || null,
 				categories: show.categories.map((c) => ({ term_id: c.term_id, name: c.name })),
 				tags: show.tags.map((t) => ({ term_id: t.term_id, name: t.name })),
-				review_count: show.review_count ? Number(show.review_count) : null,
+				review_count: 0, // Auto-incremented when reviews are added
 				additional_info: additionalInfo,
 			};
 
@@ -1029,6 +1027,20 @@ export default function EditShowPage() {
 		}
 	};
 
+	const handleAddGalleryMediaMultiple = (urls: string[], type: "image" | "video") => {
+		if (type === "image") {
+			setShow((prev) => ({
+				...prev,
+				gallery_images: [...prev.gallery_images, ...urls],
+			}));
+		} else {
+			setShow((prev) => ({
+				...prev,
+				gallery_videos: [...prev.gallery_videos, ...urls],
+			}));
+		}
+	};
+
 	const removeGalleryImage = (index: number) => {
 		setShow((prev) => ({
 			...prev,
@@ -1227,17 +1239,6 @@ export default function EditShowPage() {
 									onChange={(e) => setShow({ ...show, currency_symbol: e.target.value })}
 									disabled={loading}
 									placeholder="&#36;"
-								/>
-							</div>
-							<div className="space-y-2">
-								<Label htmlFor="review_count">Review Count</Label>
-								<Input
-									id="review_count"
-									type="number"
-									value={show.review_count}
-									onChange={(e) => setShow({ ...show, review_count: e.target.value })}
-									placeholder="0"
-									disabled={loading}
 								/>
 							</div>
 						</div>
@@ -1728,7 +1729,7 @@ export default function EditShowPage() {
 								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Select a price level..." />
 								</SelectTrigger>
-								<SelectContent className="w-[var(--radix-select-trigger-width)]">
+								<SelectContent className="w-(--radix-select-trigger-width)">
 									{availablePriceLevels.map((priceLevel) => {
 										const isSelected = show.priceLevels.some(
 											(pl) => pl.price_level_id === priceLevel.price_level_id
@@ -1892,9 +1893,27 @@ export default function EditShowPage() {
 												disabled={isSelected}
 												className={isSelected ? "opacity-60" : ""}
 											>
-												<div className="flex items-center gap-2 w-full">
+												<div className="flex items-center gap-3 w-full py-1">
 													{isSelected && <Check className="h-4 w-4 shrink-0" />}
-													<span>{feature.title}</span>
+													{feature.img_url && (
+														<div className="relative h-10 w-14 overflow-hidden rounded border bg-muted shrink-0">
+															<Image
+																src={feature.img_url}
+																alt={feature.title}
+																fill
+																className="object-cover"
+																unoptimized
+															/>
+														</div>
+													)}
+													<div className="flex-1 min-w-0">
+														<div className="font-medium truncate">{feature.title}</div>
+														{feature.description && (
+															<div className="text-xs text-muted-foreground truncate">
+																{feature.description}
+															</div>
+														)}
+													</div>
 												</div>
 											</SelectItem>
 										);
@@ -1905,7 +1924,7 @@ export default function EditShowPage() {
 								{show.show_features_details.map((feature, index) => (
 									<div key={index} className="flex items-start gap-2 p-3 border rounded-md">
 										{feature.img_url && (
-											<div className="relative h-12 w-16 overflow-hidden rounded-md border bg-muted flex-shrink-0">
+											<div className="relative h-12 w-16 overflow-hidden rounded-md border bg-muted shrink-0">
 												<Image
 													src={feature.img_url}
 													alt={feature.title}
@@ -2063,7 +2082,7 @@ export default function EditShowPage() {
 								disabled={loading}
 							>
 								<Plus className="h-4 w-4 mr-2" />
-								Add Image URL
+								Select Images
 							</Button>
 							<Button
 								type="button"
@@ -2072,7 +2091,7 @@ export default function EditShowPage() {
 								disabled={loading}
 							>
 								<Plus className="h-4 w-4 mr-2" />
-								Add Video URL
+								Select Videos
 							</Button>
 						</div>
 						{show.gallery_images.length > 0 && (
@@ -2362,13 +2381,17 @@ export default function EditShowPage() {
 				isOpen={galleryImageModalOpen}
 				onClose={() => setGalleryImageModalOpen(false)}
 				onSave={handleAddGalleryMedia}
+				onSaveMultiple={handleAddGalleryMediaMultiple}
 				type="image"
+				multiple={true}
 			/>
 			<GalleryMediaModal
 				isOpen={galleryVideoModalOpen}
 				onClose={() => setGalleryVideoModalOpen(false)}
 				onSave={handleAddGalleryMedia}
+				onSaveMultiple={handleAddGalleryMediaMultiple}
 				type="video"
+				multiple={true}
 			/>
 
 			{/* Image Select Modals */}

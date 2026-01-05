@@ -13,10 +13,19 @@ interface GalleryMediaModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	onSave: (url: string, type: "image" | "video") => void;
+	onSaveMultiple?: (urls: string[], type: "image" | "video") => void; // For multiple selection
 	type: "image" | "video";
+	multiple?: boolean; // Enable multiple selection mode
 }
 
-export function GalleryMediaModal({ isOpen, onClose, onSave, type }: GalleryMediaModalProps) {
+export function GalleryMediaModal({
+	isOpen,
+	onClose,
+	onSave,
+	onSaveMultiple,
+	type,
+	multiple = false,
+}: GalleryMediaModalProps) {
 	const [url, setUrl] = useState("");
 	const [mediaModalOpen, setMediaModalOpen] = useState(false);
 
@@ -29,10 +38,35 @@ export function GalleryMediaModal({ isOpen, onClose, onSave, type }: GalleryMedi
 		}
 	};
 
+	const handleMultipleSelect = (urls: string[]) => {
+		if (onSaveMultiple && urls.length > 0) {
+			onSaveMultiple(urls, type);
+			onClose();
+		}
+	};
+
 	const handleClose = () => {
 		setUrl("");
 		onClose();
 	};
+
+	if (multiple) {
+		return (
+			<MediaSelectModal
+				isOpen={isOpen}
+				onClose={handleClose}
+				onSelect={(mediaUrl) => {
+					onSave(mediaUrl, type);
+					handleClose();
+				}}
+				onSelectMultiple={handleMultipleSelect}
+				currentMediaUrl={url}
+				mediaType={type}
+				uploadPrefix="shows/"
+				multiple={true}
+			/>
+		);
+	}
 
 	return (
 		<BaseModal
@@ -97,9 +131,11 @@ export function GalleryMediaModal({ isOpen, onClose, onSave, type }: GalleryMedi
 				isOpen={mediaModalOpen}
 				onClose={() => setMediaModalOpen(false)}
 				onSelect={(mediaUrl) => setUrl(mediaUrl)}
+				onSelectMultiple={multiple ? handleMultipleSelect : undefined}
 				currentMediaUrl={url}
 				mediaType={type}
 				uploadPrefix="shows/"
+				multiple={multiple}
 			/>
 		</BaseModal>
 	);

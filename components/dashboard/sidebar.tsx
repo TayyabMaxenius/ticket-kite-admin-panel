@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getUser, type User } from "@/lib/auth";
@@ -18,11 +18,7 @@ import {
 	FolderTree,
 	TicketPercent,
 	DollarSign,
-	MapPin,
 	Code,
-	Camera,
-	Hotel,
-	Music,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -62,6 +58,12 @@ const menuItems: MenuItem[] = [
 	{
 		title: "Other Shows",
 		href: "/dashboard/other-shows",
+		icon: Sparkles,
+		roles: ["admin"],
+	},
+	{
+		title: "Tips & Tricks",
+		href: "/dashboard/tips",
 		icon: Sparkles,
 		roles: ["admin"],
 	},
@@ -135,12 +137,6 @@ const menuItems: MenuItem[] = [
 		title: "Analytics",
 		href: "/dashboard/analytics",
 		icon: BarChart3,
-		roles: ["admin"],
-	},
-	{
-		title: "Tips & Tricks",
-		href: "/dashboard/tips",
-		icon: Sparkles,
 		roles: ["admin"],
 	},
 	{
