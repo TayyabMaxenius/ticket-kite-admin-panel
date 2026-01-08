@@ -1,0 +1,1545 @@
+{
+	"result": [
+		{
+			"id": 4338,
+			"name": "All Motown",
+			"venue": {
+				"id": 1833,
+				"name": "Modern Showrooms at Alexis Park Resort Hotel",
+				"address1": "375 E Harmon",
+				"city": "Las Vegas",
+				"state": "NV",
+				"postalCode": "89169",
+				"currencySymbol": "$",
+				"currencyLocale": "en-US",
+				"timezone": "(UTC-08:00) Pacific Time (US & Canada)",
+				"timezoneInfo": {
+					"id": "Pacific Standard Time",
+					"displayName": "(UTC-08:00) Pacific Time (US & Canada)",
+					"baseUtcOffset": "-08:00:00",
+					"currentUtcOffset": "-08:00:00"
+				}
+			},
+			"seriesCode": "ALLMOTOWN",
+			"publicUrl": "https://tickets.ticketkite.com/tickets/series/ALLMOTOWN",
+			"isGASales": false,
+			"priceLevels": [
+				{
+					"id": 21971,
+					"name": "Premium Seat with Table",
+					"label": "Premium"
+				},
+				{
+					"id": 21972,
+					"name": "Table",
+					"description": "",
+					"label": "Table"
+				},
+				{
+					"id": 21973,
+					"name": "General Admission Seat",
+					"description": "Best available seat at showtime. This does not guarantee any specific seat.",
+					"label": "GA Seat"
+				},
+				{
+					"id": 88940,
+					"name": "Dealers Choice",
+					"description": "Step up to the table with Dealer’s Choice — the discounted ticket where the house holds the cards. You place your bet, and at showtime, the dealer drops you into the best seat still open. No hustling, no tipping, no negotiating. Just pure fate… and usually a damn good payoff.",
+					"label": "Dealer's Choice"
+				}
+			],
+			"priceTypes": [
+				{
+					"id": 8923,
+					"displayName": "Adult",
+					"isDefault": true
+				}
+			],
+			"promotions": [
+				{
+					"id": 43260,
+					"name": "AP Guest",
+					"code": "APGUEST",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 73754,
+					"name": "Brits 2 Vegas",
+					"code": "BRITS2VEGAS",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 50918,
+					"name": "Destinations 2023",
+					"code": "DESTINATION23",
+					"minTickets": 1,
+					"maxTickets": 30,
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 98665,
+					"name": "EventBrite",
+					"code": "EVENTBRITE",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 72025,
+					"name": "Get Your Guide",
+					"code": "GYG2024",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100447,
+					"name": "LVCVA Fab5",
+					"code": "FAB5LV",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 90620,
+					"name": "SEATS50OFF",
+					"code": "SEATS50OFF",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 106948,
+					"name": "Spotlight 26",
+					"code": "SPOT26",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 94106,
+					"name": "Spotlight 27",
+					"code": "SPOT27",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 105956,
+					"name": "THE411",
+					"code": "THE411",
+					"maxTickets": 30,
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 43246,
+					"name": "Ticketkite",
+					"code": "TICKETKITEVEGAS",
+					"maxTickets": 30,
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 27675,
+					"name": "Tix4Tonight",
+					"code": "TIX4TONIGHT",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 102993,
+					"name": "VDC FULL 26",
+					"code": "VDC2622F",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 79229,
+					"name": "VDC Group",
+					"code": "VDCGROUP",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103012,
+					"name": "VDC REG 26",
+					"code": "VDC2622R",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 73507,
+					"name": "VDC Retarget",
+					"code": "VDCRETARGET",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103018,
+					"name": "VDC SALE 26",
+					"code": "VDC2622S",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 62174,
+					"name": "VDCDESKTOP",
+					"code": "VDCDESKTOP",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 62510,
+					"name": "VDCDESKTOPDINNER",
+					"code": "VDCDESKTOPDINNER",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 101393,
+					"name": "VDCFALL25",
+					"code": "VDCFALL25",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 62175,
+					"name": "VDCFLASH",
+					"code": "VDCFLASH",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 62511,
+					"name": "VDCFLASHDINNER",
+					"code": "VDCFLASHDINNER",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 62176,
+					"name": "VDCMOBILE",
+					"code": "VDCMOBILE",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 62512,
+					"name": "VDCMOBILEDINNER",
+					"code": "VDCMOBILEDINNER",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 20815,
+					"name": "Viator",
+					"code": "VIATOR",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 94105,
+					"name": "Victory Live",
+					"code": "VL2025",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 37384,
+					"name": "Wyndham",
+					"code": "WYNDHAM",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 90088,
+					"name": "Wyndhamupgrade",
+					"code": "WYNDHAMUPGRADE",
+					"requireEvenNumberOfTickets": false
+				}
+			],
+			"seatAlerts": [
+				{
+					"id": 952,
+					"name": "Entry for 4 guests.",
+					"description": "Each table selection is good for entry of up to 4 guests.",
+					"requireAcknowledgement": false,
+					"displayName": "Entry for 4 guests.",
+					"displayDescription": "Each table selection is good for entry of up to 4 guests."
+				}
+			]
+		},
+		{
+			"id": 10700,
+			"name": "All Shook Up",
+			"venue": {
+				"id": 1833,
+				"name": "Modern Showrooms at Alexis Park Resort Hotel",
+				"address1": "375 E Harmon",
+				"city": "Las Vegas",
+				"state": "NV",
+				"postalCode": "89169",
+				"currencySymbol": "$",
+				"currencyLocale": "en-US",
+				"timezone": "(UTC-08:00) Pacific Time (US & Canada)",
+				"timezoneInfo": {
+					"id": "Pacific Standard Time",
+					"displayName": "(UTC-08:00) Pacific Time (US & Canada)",
+					"baseUtcOffset": "-08:00:00",
+					"currentUtcOffset": "-08:00:00"
+				}
+			},
+			"seriesCode": "allshookup",
+			"publicUrl": "https://tickets.ticketkite.com/tickets/series/allshookup",
+			"isGASales": false,
+			"priceLevels": [
+				{
+					"id": 41253,
+					"name": "General Admission Seating",
+					"description": "Seating is assigned upon arrival. General Admission is in the rear of the theater. Please note although tickets are numbered for inventory control; this does not guarantee a specific seat.",
+					"label": "GA Seat"
+				},
+				{
+					"id": 41254,
+					"name": "Table",
+					"description": "Assigned Seat in the VIP Seating area with a small cocktail table.",
+					"label": "Vip Seating"
+				},
+				{
+					"id": 41255,
+					"name": "Premium with Table",
+					"description": "Assigned Seat in the Premium Section of the theater with a small cocktail table.",
+					"label": "Front Row Table"
+				},
+				{
+					"id": 89116,
+					"name": "Dealers Choice",
+					"description": "Step up to the table with Dealer’s Choice — the discounted ticket where the house holds the cards. You place your bet, and at showtime, the dealer drops you into the best seat still open. No hustling, no tipping, no negotiating. Just pure fate… and usually a damn good payoff.",
+					"label": "Dealers Choice"
+				}
+			],
+			"priceTypes": [
+				{
+					"id": 18961,
+					"displayName": "Adult",
+					"isDefault": true
+				}
+			],
+			"promotions": [
+				{
+					"id": 45404,
+					"name": "ALLFAMILY",
+					"code": "ALLFAMILY",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 45405,
+					"name": "AP Guest",
+					"code": "APGUEST",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 55972,
+					"name": "Dinner & Show",
+					"code": "DINNERSHOW",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100448,
+					"name": "FAB5LV",
+					"code": "FAB5LV",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 106640,
+					"name": "FBSPECIAL25",
+					"code": "FBSPECIAL25",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 50753,
+					"name": "GROUP15",
+					"code": "GROUP15",
+					"minTickets": 15,
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 81527,
+					"name": "GYG2024",
+					"code": "GYG2024",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 91819,
+					"name": "GYG2025",
+					"code": "GYG2025",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 90621,
+					"name": "SEATS50OFF",
+					"code": "SEATS50OFF",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 106639,
+					"name": "SLMOBILE25",
+					"code": "SLMOBILE25",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 78864,
+					"name": "SLV24",
+					"code": "SLV24",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 91816,
+					"name": "SPOTLIGHT25",
+					"code": "SPOTLIGHT25",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 78859,
+					"name": "TICKETKITE24",
+					"code": "TICKETKITE24",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 91818,
+					"name": "TICKETKITE25",
+					"code": "TICKETKITE25",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 106912,
+					"name": "TicketKiteDC26",
+					"code": "TICKETKITEDC26",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 78863,
+					"name": "TIX24",
+					"code": "TIX24",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 82985,
+					"name": "Travelrite",
+					"code": "TRAVELRITE",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 102994,
+					"name": "VDC FULL 26",
+					"code": "VDC2622F",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103011,
+					"name": "VDC REG 26",
+					"code": "VDC2622R",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103024,
+					"name": "VDC SALE 26",
+					"code": "VDC2622S",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 62177,
+					"name": "VDCDESKTOP",
+					"code": "VDCDESKTOP",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 62480,
+					"name": "VDCDESKTOPDINNER",
+					"code": "VDCDESKTOPDINNER",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 78862,
+					"name": "VDCDIS24",
+					"code": "VDCDIS24",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 91815,
+					"name": "VDCDIS25",
+					"code": "VDCDIS25",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 62178,
+					"name": "VDCFLASH",
+					"code": "VDCFLASH",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 62481,
+					"name": "VDCFLASHDINNER",
+					"code": "VDCFLASHDINNER",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 62179,
+					"name": "VDCMOBILE",
+					"code": "VDCMOBILE",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 62482,
+					"name": "VDCMOBILEDINNER",
+					"code": "VDCMOBILEDINNER",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 45425,
+					"name": "Vegas.com Flash",
+					"code": "FLASHVEGAS",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 79049,
+					"name": "VegasVibe 2024",
+					"code": "VV50",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 45429,
+					"name": "Viator",
+					"code": "VIATOR",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 78860,
+					"name": "VIATOR24",
+					"code": "VIATOR24",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 91817,
+					"name": "VIATOR25",
+					"code": "VIATOR25",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 95026,
+					"name": "Victory Live",
+					"code": "VL2025",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 107098,
+					"name": "VV2026",
+					"code": "VV2026",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 104465,
+					"name": "WINTER25",
+					"code": "WINTER25",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 90071,
+					"name": "Wyndhamupgrade",
+					"code": "WYNDHAMUPGRADE",
+					"requireEvenNumberOfTickets": false
+				}
+			],
+			"seatAlerts": [
+				{
+					"id": 952,
+					"name": "Entry for 4 guests.",
+					"description": "Each table selection is good for entry of up to 4 guests.",
+					"requireAcknowledgement": false,
+					"displayName": "Entry for 4 guests.",
+					"displayDescription": "Each table selection is good for entry of up to 4 guests."
+				}
+			]
+		},
+		{
+			"id": 21756,
+			"name": "Queen Selena",
+			"venue": {
+				"id": 1833,
+				"name": "Modern Showrooms at Alexis Park Resort Hotel",
+				"address1": "375 E Harmon",
+				"city": "Las Vegas",
+				"state": "NV",
+				"postalCode": "89169",
+				"currencySymbol": "$",
+				"currencyLocale": "en-US",
+				"timezone": "(UTC-08:00) Pacific Time (US & Canada)",
+				"timezoneInfo": {
+					"id": "Pacific Standard Time",
+					"displayName": "(UTC-08:00) Pacific Time (US & Canada)",
+					"baseUtcOffset": "-08:00:00",
+					"currentUtcOffset": "-08:00:00"
+				}
+			},
+			"seriesCode": "QueenSelena",
+			"publicUrl": "https://tickets.ticketkite.com/tickets/series/QueenSelena",
+			"isGASales": false,
+			"priceLevels": [
+				{
+					"id": 83011,
+					"name": "General Admission Seat",
+					"label": "GA Seat"
+				},
+				{
+					"id": 83012,
+					"name": "VIP Seating",
+					"label": "VIP"
+				},
+				{
+					"id": 83013,
+					"name": "Front Row",
+					"label": "Front Row"
+				}
+			],
+			"priceTypes": [
+				{
+					"id": 37553,
+					"displayName": "Adult",
+					"isDefault": true
+				}
+			],
+			"promotions": [
+				{
+					"id": 94867,
+					"name": "777 TICKETS",
+					"code": "777TICKETS",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 107058,
+					"name": "AP Guest",
+					"code": "APGUEST",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 98407,
+					"name": "EventBrite",
+					"code": "EVENTBRITE",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100453,
+					"name": "FAB5LV",
+					"code": "FAB5LV",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 94870,
+					"name": "GET YOUR GUIDE",
+					"code": "GYG2025",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 94868,
+					"name": "GROUPON",
+					"code": "GROUPON",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 94866,
+					"name": "SPOTLIGHT27",
+					"code": "SPOT27",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 105958,
+					"name": "THE411",
+					"code": "THE411",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 94862,
+					"name": "TicketKite",
+					"code": "TICKETKITEVEGAS",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 94869,
+					"name": "TIX 4 TONIGHT",
+					"code": "TIX4TONIGHT",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 94863,
+					"name": "VDC Full",
+					"code": "VDCFULL",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103001,
+					"name": "VDC FULL 26",
+					"code": "VDC2622F",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103025,
+					"name": "VDC REG 26",
+					"code": "VDC2622R",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103026,
+					"name": "VDC SALE 26",
+					"code": "VDC2622S",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 94864,
+					"name": "VDCDISCREG",
+					"code": "VDCDISCREG",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 101401,
+					"name": "VDCFALL25",
+					"code": "VDCFALL25",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 94865,
+					"name": "VIATOR",
+					"code": "VIATOR",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 94871,
+					"name": "Victory Live",
+					"code": "VL2025",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 97661,
+					"name": "WYNDHAMUPGRADE",
+					"code": "WYNDHAMUPGRADE",
+					"requireEvenNumberOfTickets": false
+				}
+			],
+			"seatAlerts": [
+				{
+					"id": 952,
+					"name": "Entry for 4 guests.",
+					"description": "Each table selection is good for entry of up to 4 guests.",
+					"requireAcknowledgement": false,
+					"displayName": "Entry for 4 guests.",
+					"displayDescription": "Each table selection is good for entry of up to 4 guests."
+				}
+			]
+		},
+		{
+			"id": 22227,
+			"name": "Sinatra Live! @ Alexis Garden",
+			"venue": {
+				"id": 3051,
+				"name": "Alexis Garden at the Modern Showrooms",
+				"address1": "Alexis Park Resort Hotel",
+				"city": "Las Vegas",
+				"state": "Nevada",
+				"postalCode": "89169",
+				"currencySymbol": "$",
+				"currencyLocale": "en-US",
+				"timezone": "(UTC-08:00) Pacific Time (US & Canada)",
+				"timezoneInfo": {
+					"id": "Pacific Standard Time",
+					"displayName": "(UTC-08:00) Pacific Time (US & Canada)",
+					"baseUtcOffset": "-08:00:00",
+					"currentUtcOffset": "-08:00:00"
+				}
+			},
+			"seriesCode": "SinatraLive",
+			"publicUrl": "https://tickets.ticketkite.com/tickets/series/SinatraLive",
+			"isGASales": false,
+			"priceLevels": [
+				{
+					"id": 84640,
+					"name": "General Admission",
+					"description": "General Admission Seats are usher assigned upon arrival.",
+					"label": "GA Seat"
+				},
+				{
+					"id": 84641,
+					"name": "VIP",
+					"description": "VIP Seats are Selected at time of purchase and put you right in the middle of the action",
+					"label": "VIP Seat"
+				},
+				{
+					"id": 84642,
+					"name": "Front Row",
+					"description": "Front Row is the perfect place if you want to be as close to the stage as possible.",
+					"label": "Front Row Seat"
+				},
+				{
+					"id": 88941,
+					"name": "Dealer Choice",
+					"description": "Step up to the table with Dealer’s Choice — the discounted ticket where the house holds the cards. You place your bet, and at showtime, the dealer drops you into the best seat still open. No hustling, no tipping, no negotiating. Just pure fate… and usually a damn good payoff.",
+					"label": "Dealer Choice"
+				}
+			],
+			"priceTypes": [
+				{
+					"id": 38256,
+					"displayName": "Adult",
+					"isDefault": true
+				}
+			],
+			"promotions": [
+				{
+					"id": 96943,
+					"name": "AHERNWEB",
+					"code": "AHERNWEB",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 107059,
+					"name": "AP Guest",
+					"code": "APGUEST",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 98700,
+					"name": "EventBrite",
+					"code": "EVENTBRITE",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100454,
+					"name": "FAB5LV",
+					"code": "FAB5LV",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96944,
+					"name": "Get Your Guide",
+					"code": "GYG2025",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96945,
+					"name": "SEATS50OFF",
+					"code": "SEATS50OFF",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96947,
+					"name": "SPOTLIGHT",
+					"code": "SPOTLIGHT",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 105959,
+					"name": "THE411",
+					"code": "THE411",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96948,
+					"name": "TicketKite",
+					"code": "TICKETKITE",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96949,
+					"name": "Tix4 Booth",
+					"code": "TIX4BM",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96950,
+					"name": "TIX4TONIGHT",
+					"code": "TIX4TONIGHT",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96951,
+					"name": "VDC Dinner & Show",
+					"code": "VDCDINNER",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103004,
+					"name": "VDC FULL 26",
+					"code": "VDC2622F",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103017,
+					"name": "VDC REG 26",
+					"code": "VDC2622R",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103023,
+					"name": "VDC SALE 26",
+					"code": "VDC2622S",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96952,
+					"name": "VDCDISCREG",
+					"code": "VDCDISCREG",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 101402,
+					"name": "VDCFALL25",
+					"code": "VDCFALL25",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96953,
+					"name": "VDCFULL",
+					"code": "VDCFULL",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96954,
+					"name": "Viator",
+					"code": "VIATOR",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96955,
+					"name": "Victory Live",
+					"code": "VL2025",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96956,
+					"name": "WYNDHAM",
+					"code": "WYNDHAM",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96957,
+					"name": "Wyndhamupgrade",
+					"code": "WYNDHAMUPGRADE",
+					"requireEvenNumberOfTickets": false
+				}
+			],
+			"seatAlerts": [
+				{
+					"id": 952,
+					"name": "Entry for 4 guests.",
+					"description": "Each table selection is good for entry of up to 4 guests.",
+					"requireAcknowledgement": false,
+					"displayName": "Entry for 4 guests.",
+					"displayDescription": "Each table selection is good for entry of up to 4 guests."
+				}
+			]
+		},
+		{
+			"id": 22229,
+			"name": "King of Diamonds @ Modern Showrooms",
+			"venue": {
+				"id": 1833,
+				"name": "Modern Showrooms at Alexis Park Resort Hotel",
+				"address1": "375 E Harmon",
+				"city": "Las Vegas",
+				"state": "NV",
+				"postalCode": "89169",
+				"currencySymbol": "$",
+				"currencyLocale": "en-US",
+				"timezone": "(UTC-08:00) Pacific Time (US & Canada)",
+				"timezoneInfo": {
+					"id": "Pacific Standard Time",
+					"displayName": "(UTC-08:00) Pacific Time (US & Canada)",
+					"baseUtcOffset": "-08:00:00",
+					"currentUtcOffset": "-08:00:00"
+				}
+			},
+			"seriesCode": "KingOfDiamonds",
+			"publicUrl": "https://tickets.ticketkite.com/tickets/series/KingOfDiamonds",
+			"isGASales": false,
+			"priceLevels": [
+				{
+					"id": 84645,
+					"name": "Front Row Table",
+					"description": "",
+					"label": ""
+				},
+				{
+					"id": 84646,
+					"name": "VIP Seating",
+					"description": "",
+					"label": ""
+				},
+				{
+					"id": 84647,
+					"name": "GA"
+				}
+			],
+			"priceTypes": [
+				{
+					"id": 38258,
+					"displayName": "Adult",
+					"isDefault": true
+				}
+			],
+			"promotions": [
+				{
+					"id": 96968,
+					"name": "777Tickets",
+					"code": "777TICKETS",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 107057,
+					"name": "AP Guest",
+					"code": "APGUEST",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100449,
+					"name": "FAB5LV",
+					"code": "FAB5LV",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96967,
+					"name": "GROUPON24",
+					"code": "GROUPON24",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96966,
+					"name": "GYG2024",
+					"code": "GYG2024",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96963,
+					"name": "SPOTLIGHT24",
+					"code": "SPOTLIGHT24",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96960,
+					"name": "TICKETKITEVEGAS",
+					"code": "TICKETKITEVEGAS",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96965,
+					"name": "TIX24",
+					"code": "TIX24",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 102997,
+					"name": "VDC FULL 26",
+					"code": "VDC2622F",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103013,
+					"name": "VDC REG 26",
+					"code": "VDC2622R",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103019,
+					"name": "VDC SALE 26",
+					"code": "VDC2622S",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96962,
+					"name": "VDCDISREG",
+					"code": "VDCDISREG",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 101396,
+					"name": "VDCFALL25",
+					"code": "VDCFALL25",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96961,
+					"name": "VDCFULL",
+					"code": "VDCFULL",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 96964,
+					"name": "VIATOR24",
+					"code": "VIATOR24",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 97659,
+					"name": "WYNDHAMUPGRADE",
+					"code": "WYNDHAMUPGRADE",
+					"requireEvenNumberOfTickets": false
+				}
+			],
+			"seatAlerts": [
+				{
+					"id": 952,
+					"name": "Entry for 4 guests.",
+					"description": "Each table selection is good for entry of up to 4 guests.",
+					"requireAcknowledgement": false,
+					"displayName": "Entry for 4 guests.",
+					"displayDescription": "Each table selection is good for entry of up to 4 guests."
+				}
+			]
+		},
+		{
+			"id": 22738,
+			"name": "Motown Brunch @ Athena Garden",
+			"venue": {
+				"id": 1833,
+				"name": "Modern Showrooms at Alexis Park Resort Hotel",
+				"address1": "375 E Harmon",
+				"city": "Las Vegas",
+				"state": "NV",
+				"postalCode": "89169",
+				"currencySymbol": "$",
+				"currencyLocale": "en-US",
+				"timezone": "(UTC-08:00) Pacific Time (US & Canada)",
+				"timezoneInfo": {
+					"id": "Pacific Standard Time",
+					"displayName": "(UTC-08:00) Pacific Time (US & Canada)",
+					"baseUtcOffset": "-08:00:00",
+					"currentUtcOffset": "-08:00:00"
+				}
+			},
+			"seriesCode": "MotownBrunchAP",
+			"publicUrl": "https://tickets.ticketkite.com/tickets/series/MotownBrunchAP",
+			"isGASales": true,
+			"priceLevels": [
+				{
+					"id": 86593,
+					"name": "VIP",
+					"description": "",
+					"label": ""
+				},
+				{
+					"id": 86594,
+					"name": "Premium",
+					"description": "",
+					"label": ""
+				}
+			],
+			"priceTypes": [
+				{
+					"id": 39162,
+					"displayName": "Adult",
+					"isDefault": true
+				}
+			],
+			"promotions": [
+				{
+					"id": 104575,
+					"name": "DESTINATIONS25",
+					"code": "DESTINATIONS25",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100451,
+					"name": "FAB5LV",
+					"code": "FAB5LV",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 102695,
+					"name": "GROUPON",
+					"code": "GROUPON",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100733,
+					"name": "GYG2025",
+					"code": "GYG2025",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 101950,
+					"name": "SPOTLIGHT",
+					"code": "SPOTLIGHT",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 101870,
+					"name": "Supremes",
+					"code": "SUPREMES",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100271,
+					"name": "TICKETKITEVEGAS",
+					"code": "TICKETKITEVEGAS",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103009,
+					"name": "VDC FULL 26",
+					"code": "VDC2622F",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103027,
+					"name": "VDC REG 26",
+					"code": "VDC2622R",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103028,
+					"name": "VDC SALE 26",
+					"code": "VDC2622S",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100731,
+					"name": "VDCDISREG",
+					"code": "VDCDISREG",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100732,
+					"name": "VDCFULL",
+					"code": "VDCFULL",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100730,
+					"name": "VIATOR25",
+					"code": "VIATOR25",
+					"requireEvenNumberOfTickets": false
+				}
+			],
+			"seatAlerts": [
+				{
+					"id": 952,
+					"name": "Entry for 4 guests.",
+					"description": "Each table selection is good for entry of up to 4 guests.",
+					"requireAcknowledgement": false,
+					"displayName": "Entry for 4 guests.",
+					"displayDescription": "Each table selection is good for entry of up to 4 guests."
+				}
+			]
+		},
+		{
+			"id": 22788,
+			"name": "Bellbottoms",
+			"venue": {
+				"id": 1833,
+				"name": "Modern Showrooms at Alexis Park Resort Hotel",
+				"address1": "375 E Harmon",
+				"city": "Las Vegas",
+				"state": "NV",
+				"postalCode": "89169",
+				"currencySymbol": "$",
+				"currencyLocale": "en-US",
+				"timezone": "(UTC-08:00) Pacific Time (US & Canada)",
+				"timezoneInfo": {
+					"id": "Pacific Standard Time",
+					"displayName": "(UTC-08:00) Pacific Time (US & Canada)",
+					"baseUtcOffset": "-08:00:00",
+					"currentUtcOffset": "-08:00:00"
+				}
+			},
+			"seriesCode": "Bellbottoms",
+			"publicUrl": "https://tickets.ticketkite.com/tickets/series/Bellbottoms",
+			"isGASales": false,
+			"priceLevels": [
+				{
+					"id": 86773,
+					"name": "General Admission Seat",
+					"label": "GA Seat"
+				},
+				{
+					"id": 86774,
+					"name": "VIP Seating",
+					"label": "VIP"
+				},
+				{
+					"id": 86775,
+					"name": "Front Row",
+					"label": "Front Row"
+				}
+			],
+			"priceTypes": [
+				{
+					"id": 39280,
+					"displayName": "Adult",
+					"isDefault": true
+				}
+			],
+			"promotions": [
+				{
+					"id": 100857,
+					"name": "777 TICKETS",
+					"code": "777TICKETS",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 107061,
+					"name": "AP Guest",
+					"code": "APGUEST",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100858,
+					"name": "EventBrite",
+					"code": "EVENTBRITE",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100859,
+					"name": "FAB5LV",
+					"code": "FAB5LV",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100861,
+					"name": "GET YOUR GUIDE",
+					"code": "GYG2025",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100860,
+					"name": "GROUPON",
+					"code": "GROUPON",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100962,
+					"name": "LVLOCAL",
+					"code": "LVLOCAL",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100862,
+					"name": "SPOTLIGHT27",
+					"code": "SPOT27",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100863,
+					"name": "TicketKite",
+					"code": "TICKETKITEVEGAS",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100864,
+					"name": "TIX 4 TONIGHT",
+					"code": "TIX4TONIGHT",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100866,
+					"name": "VDC Full",
+					"code": "VDCFULL",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103002,
+					"name": "VDC FULL 26",
+					"code": "VDC2622F",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103015,
+					"name": "VDC REG 26",
+					"code": "VDC2622R",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103021,
+					"name": "VDC SALE 26",
+					"code": "VDC2622S",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100865,
+					"name": "VDCDISCREG",
+					"code": "VDCDISCREG",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 101426,
+					"name": "VDCFALL25",
+					"code": "VDCFALL25",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100867,
+					"name": "VIATOR",
+					"code": "VIATOR",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100868,
+					"name": "Victory Live",
+					"code": "VL2025",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100869,
+					"name": "WYNDHAMUPGRADE",
+					"code": "WYNDHAMUPGRADE",
+					"requireEvenNumberOfTickets": false
+				}
+			],
+			"seatAlerts": [
+				{
+					"id": 952,
+					"name": "Entry for 4 guests.",
+					"description": "Each table selection is good for entry of up to 4 guests.",
+					"requireAcknowledgement": false,
+					"displayName": "Entry for 4 guests.",
+					"displayDescription": "Each table selection is good for entry of up to 4 guests."
+				}
+			]
+		},
+		{
+			"id": 22793,
+			"name": "Sir Elton @ Alexis Park",
+			"venue": {
+				"id": 1833,
+				"name": "Modern Showrooms at Alexis Park Resort Hotel",
+				"address1": "375 E Harmon",
+				"city": "Las Vegas",
+				"state": "NV",
+				"postalCode": "89169",
+				"currencySymbol": "$",
+				"currencyLocale": "en-US",
+				"timezone": "(UTC-08:00) Pacific Time (US & Canada)",
+				"timezoneInfo": {
+					"id": "Pacific Standard Time",
+					"displayName": "(UTC-08:00) Pacific Time (US & Canada)",
+					"baseUtcOffset": "-08:00:00",
+					"currentUtcOffset": "-08:00:00"
+				}
+			},
+			"seriesCode": "SirEltonAP",
+			"publicUrl": "https://tickets.ticketkite.com/tickets/series/SirEltonAP",
+			"isGASales": false,
+			"priceLevels": [
+				{
+					"id": 86824,
+					"name": "General Admission Seat",
+					"label": "GA Seat"
+				},
+				{
+					"id": 86825,
+					"name": "VIP Seating",
+					"label": "VIP"
+				},
+				{
+					"id": 86826,
+					"name": "Front Row",
+					"label": "Front Row"
+				}
+			],
+			"priceTypes": [
+				{
+					"id": 39287,
+					"displayName": "Adult",
+					"isDefault": true
+				}
+			],
+			"promotions": [
+				{
+					"id": 100908,
+					"name": "777 TICKETS",
+					"code": "777TICKETS",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 107060,
+					"name": "AP Guest",
+					"code": "APGUEST",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100909,
+					"name": "EventBrite",
+					"code": "EVENTBRITE",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100910,
+					"name": "FAB5LV",
+					"code": "FAB5LV",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100912,
+					"name": "GET YOUR GUIDE",
+					"code": "GYG2025",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100911,
+					"name": "GROUPON",
+					"code": "GROUPON",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100913,
+					"name": "SPOTLIGHT27",
+					"code": "SPOT27",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100914,
+					"name": "TicketKite",
+					"code": "TICKETKITEVEGAS",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100915,
+					"name": "TIX 4 TONIGHT",
+					"code": "TIX4TONIGHT",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100917,
+					"name": "VDC Full",
+					"code": "VDCFULL",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103003,
+					"name": "VDC FULL 26",
+					"code": "VDC2622F",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103016,
+					"name": "VDC REG 26",
+					"code": "VDC2622R",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 103022,
+					"name": "VDC SALE 26",
+					"code": "VDC2622S",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100916,
+					"name": "VDCDISCREG",
+					"code": "VDCDISCREG",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 101394,
+					"name": "VDCFALL25",
+					"code": "VDCFALL25",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100918,
+					"name": "VIATOR",
+					"code": "VIATOR",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100919,
+					"name": "Victory Live",
+					"code": "VL2025",
+					"requireEvenNumberOfTickets": false
+				},
+				{
+					"id": 100920,
+					"name": "WYNDHAMUPGRADE",
+					"code": "WYNDHAMUPGRADE",
+					"requireEvenNumberOfTickets": false
+				}
+			],
+			"seatAlerts": [
+				{
+					"id": 952,
+					"name": "Entry for 4 guests.",
+					"description": "Each table selection is good for entry of up to 4 guests.",
+					"requireAcknowledgement": false,
+					"displayName": "Entry for 4 guests.",
+					"displayDescription": "Each table selection is good for entry of up to 4 guests."
+				}
+			]
+		}
+	]
+}

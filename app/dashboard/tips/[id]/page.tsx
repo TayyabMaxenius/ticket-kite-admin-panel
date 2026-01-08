@@ -349,7 +349,7 @@ export default function EditTipPage() {
 				</div>
 			</div>
 
-			<form onSubmit={handleSubmit}>
+			<form onSubmit={handleSubmit} className="space-y-6">
 				<Card>
 					<CardHeader>
 						<CardTitle>Tip Information</CardTitle>

@@ -159,7 +159,7 @@ export default function TipsAndTricksPage() {
 					<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 						{displayedTips.map((tip) => (
 							<Card key={tip.id} className="overflow-hidden group">
-								<div className="aspect-[4/3] w-full bg-muted relative overflow-hidden">
+								<div className="aspect-4/3 w-full bg-muted relative overflow-hidden">
 									{tip.img_src && tip.img_src !== "false" && typeof tip.img_src === "string" ? (
 										<Image
 											src={tip.img_src}
@@ -169,7 +169,7 @@ export default function TipsAndTricksPage() {
 											unoptimized
 										/>
 									) : (
-										<div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
+										<div className="w-full h-full flex items-center justify-center bg-linear-to-br from-primary/20 to-primary/5">
 											<span className="text-muted-foreground text-xs">No Image</span>
 										</div>
 									)}
